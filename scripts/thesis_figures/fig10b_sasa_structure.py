@@ -47,19 +47,28 @@ LOOP_REL     = set(range(13, 21))
 
 
 # ── Load SASA per residue ────────────────────────────────────────────────────
+DATA_SOURCE: str = ""
+
+
 def _load_sasa() -> dict[int, float]:
     """Return ``{absolute_residue: sasa_total_A2}`` for residues 15-46."""
+    global DATA_SOURCE
     if os.path.isfile(CSV_PATH):
+        DATA_SOURCE = f"csv: {os.path.relpath(CSV_PATH, os.getcwd())}"
         out: dict[int, float] = {}
         with open(CSV_PATH, newline="") as fh:
             for row in csv.DictReader(fh):
                 out[int(row["absolute_residue"])] = float(row["sasa_total_A2"])
+        print(f"  [fig10b] using real CSV: {CSV_PATH}", file=sys.stderr)
         return out
     try:
         import freesasa
         structure = freesasa.Structure(PDB_PATH)
         result = freesasa.calc(structure)
         areas = result.residueAreas()[CHAIN]
+        DATA_SOURCE = "FreeSASA live on 1YMO.pdb1"
+        print(f"  [fig10b] CSV not found — live FreeSASA on {PDB_PATH}",
+              file=sys.stderr)
         return {int(k): areas[k].total for k in areas
                 if ABS_START <= int(k) <= ABS_END}
     except Exception as exc:
