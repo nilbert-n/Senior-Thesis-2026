@@ -65,7 +65,7 @@ ax_bar.set_title(
     f"({n_bound} of {n_free} ASOs entered the 16.56 Å cutoff)",
     fontsize=10, loc="left")
 ax_bar.invert_yaxis()
-ax_bar.set_xlim(0, max(bp_bound) * 1.25)
+ax_bar.set_xlim(0, max(bp_bound) * 1.25 if n_bound else 0.05)
 
 # ── B: Distance heatmap (ever-bound only, with mini-inset for full matrix) ──
 D_bound_cap = np.clip(dist_sorted[:n_bound], 0, 200)
