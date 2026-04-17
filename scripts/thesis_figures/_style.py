@@ -128,25 +128,18 @@ def apply_style():
 def add_footnote(fig, text: str, *, y: float | None = None,
                  color: str | None = None, reserve: float = 0.28):
     """
-    Place a small italic methods/caveat note below every axis in ``fig``
-    without colliding with the x-axis label.
+    No-op.
 
-    ``reserve`` is the fraction of figure height reserved for the x-axis
-    label + tick labels + footnote (default 0.28 ≈ 28 %). This is
-    intentionally generous so the footnote never crashes into rotated
-    tick labels. Call with a larger ``reserve`` for figures that also
-    carry a legend below the axes.
+    The thesis writeup uses the LaTeX ``\\caption{}`` for methods /
+    caveat text, so the old grey italic footer printed inside the
+    figure has been retired.  Kept as a no-op (rather than deleted)
+    so existing figure scripts that still call ``add_footnote(fig,
+    "...")`` continue to work unchanged.
+
+    ``y``, ``color`` and ``reserve`` are accepted for backwards
+    compatibility and ignored.
     """
-    if color is None:
-        color = COLORS["gray"]
-    current = fig.subplotpars.bottom
-    fig.subplots_adjust(bottom=max(reserve, current))
-    if y is None:
-        y = 0.015
-    fig.text(0.5, y, text,
-             ha="center", va="bottom",
-             fontsize=7, style="italic", color=color,
-             wrap=True)
+    return None
 
 
 def save_fig(fig, stem: str, *, formats=("pdf",)):
