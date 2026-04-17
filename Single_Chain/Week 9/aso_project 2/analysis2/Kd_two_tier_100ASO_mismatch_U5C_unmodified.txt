@@ -1,0 +1,19 @@
+Simulation: 100ASO_mismatch_U5C_unmodified
+DAT: ./configs/100ASO_mismatch_U5C_unmodified.dat
+TRAJ: ./outputs/100ASO_mismatch_U5C_unmodified.lammpstrj
+Frames: 638
+Duration_ns: 318.5000
+ASO_length: 10
+ASO_sequence: G G G C C G U U U U
+Total_ASOs: 100
+Box_lengths_A: 160.000000, 160.000000, 160.000000
+Volume_L: 4.096e-21
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.587774
+Mean_occupancy: 0.680251
+Max_occupancy: 3
+COM_cutoff_10_A: f_site=0.015674, Kd_M=2.5456041, n_binders=3, n_events=6, mean_dwell_frames=1.666667
+COM_cutoff_12_A: f_site=0.026646, Kd_M=1.4805608, n_binders=3, n_events=11, mean_dwell_frames=1.545455
+COM_cutoff_15_A: f_site=0.086207, Kd_M=0.42936893, n_binders=9, n_events=36, mean_dwell_frames=1.527778
+COM_cutoff_20_A: f_site=0.177116, Kd_M=0.1880227, n_binders=11, n_events=69, mean_dwell_frames=1.652174

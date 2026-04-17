@@ -1,0 +1,18 @@
+Simulation: 100ASO_truncated_unmodified
+Frames: 1430
+Duration: 714.5 ns
+ASO length: 7 beads
+ASO sequence: G G G C U G U
+Free ASOs: 99
+Docked bound fraction: 14.83%
+Free ASOs ever bound: 44/99
+HP RMSD: 25.56 ± 9.27 Å
+ASO RMSD: 1.99 ± 0.58 Å
+Complex Rg: 108.74 ± 47.17 Å
+Hairpin Rg: 29.59 ± 6.12 Å
+Mean PE: -81.57 kcal/mol
+Mean T: 299.92 K
+
+Per-bead contact prob: [0.127 0.146 0.146 0.147 0.148 0.148 0.142]
+Per-bead ΔG: [1.14 1.04 1.04 1.04 1.04 1.04 1.07] kcal/mol
+Free ASO bound counts: [3, 1, 1, 2, 103, 6, 15, 1, 12, 9, 3, 1, 64, 1, 3, 5, 124, 4, 5, 2, 3, 5, 6, 1, 9, 40, 3, 12, 82, 61, 2, 4, 3, 2, 6, 1, 8, 3, 1, 5, 1, 5, 21, 1]

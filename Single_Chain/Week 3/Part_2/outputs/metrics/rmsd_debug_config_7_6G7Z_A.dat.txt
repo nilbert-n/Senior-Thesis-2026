@@ -1,0 +1,10 @@
+traj=config_7_6G7Z_A.dat.lammpstrj
+core=config_7_6G7Z_A.dat
+preferred_chain=A
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week3_2/outputs/7_6G7Z.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week3_2/outputs/log.config_7_6G7Z_A.dat.lammps
+timestep_fs=10.0
+traj_first_N=132
+ref_C3prime_N=132
+frames_with_numeric_RMSD=8161

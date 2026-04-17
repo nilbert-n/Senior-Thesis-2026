@@ -1,0 +1,11 @@
+traj=config_8_4U7U.pdb1_L.dat_298_nvt.lammpstrj
+core=config_8_4U7U.pdb1_L.dat
+preferred_chain=L
+used_chain=L
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 2/outputs/8_4U7U.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 2/outputs/log.config_8_4U7U.pdb1_L.dat.lammps
+timestep_fs=10.0
+traj_first_N=61
+ref_C3prime_N=61
+frames_with_numeric_RMSD=1001
+C3_counts_by_chain={'L': 61, 'X': 61}

@@ -1,0 +1,17 @@
+CG bead-level accessible surface proxy analysis
+DAT: configs/25ASO_unmod.dat
+TRAJ: outputs/25ASO_unmod.lammpstrj
+Frames processed: 2101
+Timesteps: 0 -> 105000000
+Hairpin beads: 32
+Loop residues: [13, 14, 15, 16, 17, 18, 19, 20]
+Bead radius (A): 4.0000
+Probe radius (A): 1.4000
+Overall mean proxy: 204.612119 A^2
+Loop mean proxy: 200.429651 A^2
+Loop max proxy: 200.792101 A^2
+Non-loop mean proxy: 206.006274 A^2
+Top 3 exposed residues by mean proxy:
+  Residue 1: 283.290989 A^2
+  Residue 32: 280.810808 A^2
+  Residue 17: 200.792101 A^2

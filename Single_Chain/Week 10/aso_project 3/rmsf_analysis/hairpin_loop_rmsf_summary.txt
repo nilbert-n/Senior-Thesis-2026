@@ -1,0 +1,118 @@
+HAIRPIN LOOP RMSF ANALYSIS
+============================================================
+DAT: configs/25ASO_unmod.dat
+TRAJ: outputs/25ASO_unmod.lammpstrj
+Hairpin residues: 32
+Hairpin sequence: GCUGACUUUCAGCCCCAAACAAAAAAGUCAGC
+Total ASOs: 25
+Frames: 2101
+Duration (ns): 1050.0000
+Loop residues: [13, 14, 15, 16, 17, 18, 19, 20]
+Fit residues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+Binding cutoff (Å): 16.8
+COM cutoff (Å): 12.0
+Min consecutive frames: 1
+Bound frames: 146
+Unbound frames: 1955
+
+Per-residue RMSF (all frames):
+Residue  1:  28.6723 Å
+Residue  2:  26.0303 Å
+Residue  3:  23.5715 Å
+Residue  4:  21.5364 Å
+Residue  5:  19.9313 Å
+Residue  6:  18.8784 Å
+Residue  7:  18.6282 Å
+Residue  8:  19.2345 Å
+Residue  9:  20.4613 Å
+Residue 10:  21.9691 Å
+Residue 11:  23.5080 Å
+Residue 12:  25.1441 Å
+Residue 13:  26.6213 Å  <loop>
+Residue 14:  28.5345 Å  <loop>
+Residue 15:  30.0356 Å  <loop>
+Residue 16:  30.6255 Å  <loop>
+Residue 17:  30.2417 Å  <loop>
+Residue 18:  29.5583 Å  <loop>
+Residue 19:  28.0782 Å  <loop>
+Residue 20:  25.9400 Å  <loop>
+Residue 21:  23.6345 Å
+Residue 22:  21.6908 Å
+Residue 23:  20.2344 Å
+Residue 24:  19.3820 Å
+Residue 25:  19.0501 Å
+Residue 26:  19.2087 Å
+Residue 27:  19.7171 Å
+Residue 28:  20.5715 Å
+Residue 29:  22.0365 Å
+Residue 30:  23.8650 Å
+Residue 31:  26.2329 Å
+Residue 32:  28.8994 Å
+
+Per-residue RMSF (bound frames):
+Residue  1:  29.7639 Å
+Residue  2:  26.9223 Å
+Residue  3:  24.3953 Å
+Residue  4:  22.3007 Å
+Residue  5:  20.3330 Å
+Residue  6:  18.8683 Å
+Residue  7:  18.5429 Å
+Residue  8:  18.8180 Å
+Residue  9:  19.6683 Å
+Residue 10:  20.8773 Å
+Residue 11:  21.8120 Å
+Residue 12:  22.8338 Å
+Residue 13:  23.9260 Å  <loop>
+Residue 14:  25.9374 Å  <loop>
+Residue 15:  27.8479 Å  <loop>
+Residue 16:  28.9736 Å  <loop>
+Residue 17:  29.1277 Å  <loop>
+Residue 18:  29.0095 Å  <loop>
+Residue 19:  27.8728 Å  <loop>
+Residue 20:  26.0212 Å  <loop>
+Residue 21:  23.7604 Å
+Residue 22:  21.8057 Å
+Residue 23:  20.0832 Å
+Residue 24:  18.9397 Å
+Residue 25:  18.4962 Å
+Residue 26:  18.5152 Å
+Residue 27:  19.0260 Å
+Residue 28:  20.0563 Å
+Residue 29:  21.7699 Å
+Residue 30:  23.7826 Å
+Residue 31:  26.3149 Å
+Residue 32:  29.1166 Å
+
+Per-residue RMSF (unbound frames):
+Residue  1:  28.3943 Å
+Residue  2:  25.7388 Å
+Residue  3:  23.2696 Å
+Residue  4:  21.2621 Å
+Residue  5:  19.7658 Å
+Residue  6:  18.8575 Å
+Residue  7:  18.7144 Å
+Residue  8:  19.3994 Å
+Residue  9:  20.6522 Å
+Residue 10:  22.1485 Å
+Residue 11:  23.6812 Å
+Residue 12:  25.3179 Å
+Residue 13:  26.7936 Å  <loop>
+Residue 14:  28.6850 Å  <loop>
+Residue 15:  30.1597 Å  <loop>
+Residue 16:  30.7210 Å  <loop>
+Residue 17:  30.3111 Å  <loop>
+Residue 18:  29.5994 Å  <loop>
+Residue 19:  28.1045 Å  <loop>
+Residue 20:  25.9489 Å  <loop>
+Residue 21:  23.6360 Å
+Residue 22:  21.6721 Å
+Residue 23:  20.2086 Å
+Residue 24:  19.3513 Å
+Residue 25:  19.0144 Å
+Residue 26:  19.1849 Å
+Residue 27:  19.7067 Å
+Residue 28:  20.5820 Å
+Residue 29:  22.0749 Å
+Residue 30:  23.9332 Å
+Residue 31:  26.3305 Å
+Residue 32:  29.0121 Å

@@ -1,0 +1,10 @@
+traj=config_6_4OJI_A.dat.lammpstrj
+core=config_6_4OJI_A.dat
+preferred_chain=A
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week3_2/outputs_wk4/6_4OJI.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week3_2/outputs_wk4/log.config_6_4OJI_A.dat.lammps
+timestep_fs=10.0
+traj_first_N=51
+ref_C3prime_N=54
+frames_with_numeric_RMSD=8161

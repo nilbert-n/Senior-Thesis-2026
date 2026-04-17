@@ -1,0 +1,7 @@
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+  using 1 OpenMP thread(s) per MPI task
+ERROR: Cannot open file config_22_len100_01.dat: No such file or directory (src/read_data.cpp:367)
+Last command: read_data ${df}
+srun: error: della-i13n25: task 0: Exited with exit code 1
+srun: Terminating StepId=2469168.0

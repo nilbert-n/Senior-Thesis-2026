@@ -1,0 +1,53 @@
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+# ===============================
+# 4 µs Microcanonical (NVE) Run
+# Checking Thermal Fluctuations
+# ===============================
+
+shell mkdir -p outputs
+clear
+  using 1 OpenMP thread(s) per MPI task
+
+variable df string 100ASO.dat
+variable T_eq    equal 300.0
+variable n_run   equal 400000000
+variable dump_stride   equal 50000
+variable thermo_stride equal 10000
+variable stride10      equal ${thermo_stride}*10
+variable stride10      equal 10000*10
+
+units real
+boundary p p p
+atom_style full
+
+read_data ${df}
+read_data 100ASO.dat
+Reading data file ...
+  orthogonal box = (-80 -80 -80) to (80 80 80)
+  2 by 4 by 4 MPI processor grid
+  reading atoms ...
+  1032 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  orthogonal box = (-80 -80 -80) to (80 80 80)
+  2 by 4 by 4 MPI processor grid
+  reading bonds ...
+  931 bonds
+  reading angles ...
+  830 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.014 seconds
+variable tag string ${df}
+variable tag string 100ASO.dat
+log outputs/log.${tag}_NVE.lammps
+log outputs/log.100ASO.dat_NVE.lammps

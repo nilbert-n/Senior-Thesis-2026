@@ -1,0 +1,19 @@
+Simulation: 50ASO_unmod
+DAT: ./configs/50ASO_unmod.dat
+TRAJ: ./outputs/50ASO_unmod.lammpstrj
+Frames: 1595
+Duration_ns: 797.0000
+ASO_length: 10
+ASO_sequence: G G G C U G U U U U
+Total_ASOs: 50
+Box_lengths_A: 160.000000, 160.000000, 160.000000
+Volume_L: 4.096e-21
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.972414
+Mean_occupancy: 1.933542
+Max_occupancy: 5
+COM_cutoff_10_A: f_site=0.030094, Kd_M=0.6529154, n_binders=18, n_events=40, mean_dwell_frames=1.200000
+COM_cutoff_12_A: f_site=0.059561, Kd_M=0.31968283, n_binders=19, n_events=74, mean_dwell_frames=1.283784
+COM_cutoff_15_A: f_site=0.134796, Kd_M=0.12975901, n_binders=22, n_events=160, mean_dwell_frames=1.406250
+COM_cutoff_20_A: f_site=0.342320, Kd_M=0.038678407, n_binders=31, n_events=377, mean_dwell_frames=1.647215

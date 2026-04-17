@@ -1,0 +1,10 @@
+traj=config_23_len200_03.dat.lammpstrj
+core=config_23_len200_03.dat
+preferred_chain=None
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 4/ran_seq/outputs_200/seq23_rank_1.pdb
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 4/ran_seq/outputs_200/log.config_23_len200_03.dat.lammps
+timestep_fs=10.0
+traj_first_N=200
+ref_C3prime_N=200
+frames_with_numeric_RMSD=8161

@@ -1,0 +1,9 @@
+== Minimum RMSD to PDB (searched 7364 frames) ==
+Frame index : 3945
+Timestep    : 197250000
+RMSD (Å)    : 29.241807
+== Maximum RMSD to PDB (searched 7364 frames) ==
+Frame index : 0
+Timestep    : 0
+RMSD (Å)    : 331.404663
+

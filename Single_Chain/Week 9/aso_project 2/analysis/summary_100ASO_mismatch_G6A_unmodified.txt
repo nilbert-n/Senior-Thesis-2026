@@ -1,0 +1,18 @@
+Simulation: 100ASO_mismatch_G6A_unmodified
+Frames: 808
+Duration: 403.5 ns
+ASO length: 10 beads
+ASO sequence: G G G C U A U U U U
+Free ASOs: 99
+Docked bound fraction: 22.52%
+Free ASOs ever bound: 65/99
+HP RMSD: 23.61 ± 10.89 Å
+ASO RMSD: 3.77 ± 1.33 Å
+Complex Rg: 81.64 ± 50.55 Å
+Hairpin Rg: 28.53 ± 6.91 Å
+Mean PE: 9.55 kcal/mol
+Mean T: 299.74 K
+
+Per-bead contact prob: [0.203 0.217 0.21  0.21  0.205 0.2   0.182 0.155 0.136 0.11 ]
+Per-bead ΔG: [0.81 0.76 0.78 0.78 0.8  0.82 0.89 1.01 1.09 1.24] kcal/mol
+Free ASO bound counts: [14, 7, 13, 19, 8, 16, 24, 33, 2, 6, 8, 14, 9, 23, 15, 13, 43, 2, 22, 1, 23, 4, 14, 5, 9, 21, 3, 31, 6, 9, 9, 3, 14, 4, 3, 10, 4, 8, 17, 3, 2, 8, 5, 1, 1, 6, 7, 14, 4, 1, 2, 9, 12, 43, 6, 79, 19, 6, 60, 9, 6, 1, 1, 54, 28]

@@ -1,0 +1,11 @@
+traj=config_1_2DER.pdb1_C.dat_298_nvt.lammpstrj
+core=config_1_2DER.pdb1_C.dat
+preferred_chain=C
+used_chain=C
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 2/outputs/1_2DER.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 2/outputs/log.config_1_2DER.pdb1_C.dat.lammps
+timestep_fs=10.0
+traj_first_N=74
+ref_C3prime_N=74
+frames_with_numeric_RMSD=1001
+C3_counts_by_chain={'C': 74}

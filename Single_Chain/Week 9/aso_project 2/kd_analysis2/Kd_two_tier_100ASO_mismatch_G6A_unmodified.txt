@@ -1,0 +1,17 @@
+Simulation: 100ASO_mismatch_G6A_unmodified
+DAT: ./configs/100ASO_mismatch_G6A_unmodified.dat
+TRAJ: ./outputs/100ASO_mismatch_G6A_unmodified.lammpstrj
+Frames: 808
+Duration_ns: 403.5000
+ASO_length: 10
+ASO_sequence: G G G C U A U U U U
+Total_ASOs: 100
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.178218
+Mean_occupancy: 0.204208
+Max_occupancy: 3
+COM_cutoff_10_A: f_site=0.008663, Kd_M=4.6386986, dG_kcal_per_mol=0.914676, n_binders=1, n_events=5, mean_dwell_frames=1.400000
+COM_cutoff_12_A: f_site=0.021040, Kd_M=1.885973, dG_kcal_per_mol=0.378192, n_binders=1, n_events=12, mean_dwell_frames=1.416667
+COM_cutoff_15_A: f_site=0.045792, Kd_M=0.84440936, dG_kcal_per_mol=-0.100811, n_binders=1, n_events=15, mean_dwell_frames=2.466667
+COM_cutoff_20_A: f_site=0.080446, Kd_M=0.46304718, dG_kcal_per_mol=-0.458953, n_binders=3, n_events=26, mean_dwell_frames=2.500000

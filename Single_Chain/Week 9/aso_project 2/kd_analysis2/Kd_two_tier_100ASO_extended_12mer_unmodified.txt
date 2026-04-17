@@ -1,0 +1,17 @@
+Simulation: 100ASO_extended_12mer_unmodified
+DAT: ./configs/100ASO_extended_12mer_unmodified.dat
+TRAJ: ./outputs/100ASO_extended_12mer_unmodified.lammpstrj
+Frames: 560
+Duration_ns: 279.5000
+ASO_length: 12
+ASO_sequence: G G G C U G U U U U A A
+Total_ASOs: 100
+Encounter_threshold_beads: 10
+Binding_threshold_beads: 12
+Encounter_fraction: 0.641071
+Mean_occupancy: 0.767857
+Max_occupancy: 4
+COM_cutoff_10_A: f_site=0.003571, Kd_M=11.310661, dG_kcal_per_mol=1.445987, n_binders=2, n_events=2, mean_dwell_frames=1.000000
+COM_cutoff_12_A: f_site=0.010714, Kd_M=3.7429263, dG_kcal_per_mol=0.786773, n_binders=2, n_events=6, mean_dwell_frames=1.000000
+COM_cutoff_15_A: f_site=0.017857, Kd_M=2.2293817, dG_kcal_per_mol=0.477908, n_binders=4, n_events=10, mean_dwell_frames=1.000000
+COM_cutoff_20_A: f_site=0.076786, Kd_M=0.48706597, dG_kcal_per_mol=-0.428808, n_binders=6, n_events=32, mean_dwell_frames=1.343750

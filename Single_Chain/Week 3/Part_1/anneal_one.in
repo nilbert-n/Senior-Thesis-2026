@@ -1,0 +1,98 @@
+# Single system SA
+shell mkdir -p outputs_sa
+clear
+variable df string config_1_2DER.pdb1_C.dat
+variable T_eq equal 298
+variable T_high equal 430
+variable T_low equal 280
+variable ncycle equal 3
+variable n_eq equal 4820000
+variable n_heat equal 6025000
+variable n_holdH equal 6025000
+variable n_cool equal 12050000
+variable n_holdL equal 6025000
+variable n_reheat equal 4820000
+variable dump_stride equal 50000
+variable thermo_stride equal 10000
+# NEW: precompute the product that LAMMPS expects as an integer
+variable stride10 equal ${thermo_stride}*10
+
+units real
+boundary p p p
+atom_style full
+read_data ${df}
+variable tag string ${df}
+log outputs_sa/log.${tag}.sa.lammps
+
+bond_style harmonic
+bond_coeff 1 7.5 5.9
+angle_style harmonic
+angle_coeff 1 5.0 150.0
+pair_style hybrid/overlay lj/cut 10.0 base/rna 18.0
+pair_coeff * * lj/cut 2.0 8.9089871814
+pair_modify shift yes
+pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+
+special_bonds lj 0.0 0.0 1.0
+neighbor 15.0 bin
+neigh_modify every 10 delay 0
+comm_style tiled
+timestep 10
+timer timeout 2:00:00
+
+dump 1 all custom ${dump_stride} outputs_sa/${tag}_SA.lammpstrj id mol type q xu yu zu
+dump_modify 1 sort id
+thermo_style custom step pe ke temp
+thermo ${thermo_stride}
+thermo_modify flush yes
+variable vpe equal pe
+variable vke equal ke
+variable vT  equal temp
+variable stride10 equal ${thermo_stride}*10
+fix fa all ave/time ${thermo_stride} 10 ${stride10} v_vpe v_vke v_vT file outputs_sa/thermo_${tag}_SA_averaged.dat
+
+fix fxnve all nve
+variable seed0 equal 43001
+fix fxl all langevin ${T_eq} ${T_eq} 100000.0 ${seed0}
+run ${n_eq}
+
+variable c loop ${ncycle}
+label acyc
+  variable seedH equal 44000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_eq} ${T_high} 100000.0 ${seedH}
+  run ${n_heat}
+
+  variable seedHH equal 45000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_high} ${T_high} 100000.0 ${seedHH}
+  run ${n_holdH}
+
+  variable seedC equal 46000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_high} ${T_low} 100000.0 ${seedC}
+  run ${n_cool}
+
+  variable seedLL equal 47000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_low} ${T_low} 100000.0 ${seedLL}
+  run ${n_holdL}
+next c
+jump SELF afterSA
+label afterSA
+
+variable seedR equal 48001
+unfix fxl
+fix fxl all langevin ${T_low} ${T_eq} 100000.0 ${seedR}
+run ${n_reheat}
+
+write_data outputs_sa/${tag}_SA_final.data

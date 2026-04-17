@@ -1,0 +1,100 @@
+Running SA on: config_3_4QLN_A.dat
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+  using 1 OpenMP thread(s) per MPI task
+Reading data file ...
+  orthogonal box = (-500.6 -500.6 -500.6) to (500.6 500.6 500.6)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  117 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  orthogonal box = (-500.6 -500.6 -500.6) to (500.6 500.6 500.6)
+  1 by 1 by 1 MPI processor grid
+  reading bonds ...
+  116 bonds
+  reading angles ...
+  115 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.010 seconds
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        1       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+New timer settings: style=normal  mode=nosync  timeout=03:00:00
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 10 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 33
+  ghost atom cutoff = 33
+  binsize = 16.5, bins = 61 61 61
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair lj/cut, perpetual, trim from (2)
+      attributes: half, newton on, cut 25
+      pair build: trim
+      stencil: none
+      bin: none
+  (2) pair base/rna, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 0
+  Time step     : 10
+  Walltime left : 2:59:59.99
+Per MPI rank memory allocation (min/avg/max) = 8.371 | 8.371 | 8.371 Mbytes
+   Step         PotEng         KinEng          Temp     
+         0   157.63951      0              0            
+     10000   55.077116      102.39013      296.11867    
+     20000   63.437513      104.72421      302.86897    
+     30000   58.07136       97.349026      281.53949    
+     40000   79.144019      122.79506      355.13103    
+     50000   48.944575      99.290536      287.15446    
+     60000   18.73304       110.75148      320.30023    
+     70000   14.205366      119.15204      344.59519    
+     80000   18.033113      101.33222      293.05914    
+     90000   12.140666      98.126288      283.78738    
+    100000   11.846304      103.67865      299.84515    
+    110000   10.125662      110.95617      320.8922     
+    120000   4.9316012      98.584693      285.11312    
+    130000  -10.709073      114.25648      330.4369     
+    140000  -11.568772      102.05658      295.15402    
+    150000  -34.399361      118.11844      341.60595    
+    160000  -25.178801      108.22119      312.98247    
+    170000  -24.636306      85.858985      248.30957    
+    180000  -41.242567      108.96208      315.12516    
+    190000  -37.697548      113.17149      327.29905    
+    200000  -32.837376      107.6795       311.41587    
+    210000  -54.650933      108.67736      314.30174    
+    220000  -60.0439        113.16379      327.27679    
+    230000  -63.224932      98.34583       284.42231    
+    240000  -59.873536      91.816103      265.53793    
+    250000  -46.134228      110.23067      318.79403    
+    260000  -69.479092      111.74904      323.18522    
+    270000  -48.51912       98.902734      286.03291    
+    280000  -74.972713      112.07905      324.13965    

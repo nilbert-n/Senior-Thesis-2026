@@ -1,0 +1,2 @@
+/var/spool/slurmd/job1806194/slurm_script: line 26: syntax error near unexpected token `('
+/var/spool/slurmd/job1806194/slurm_script: line 26: `srun $HOME/.local/bin/lmp_amd -in lmp_single(W1).in'

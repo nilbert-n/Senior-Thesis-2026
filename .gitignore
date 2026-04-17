@@ -1,0 +1,16 @@
+# Large LAMMPS simulation files
+*.lammpstrj
+*.restart
+
+# Large GROMACS/data files
+*.xvg
+*.npz
+*.pkl
+
+# Third-party tool (too large for GitHub)
+nufold/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

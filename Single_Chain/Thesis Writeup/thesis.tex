@@ -1,0 +1,53 @@
+\documentclass[12pt,lot,lof]{puthesis_undergraduate}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{latexsym}
+\usepackage{graphicx}
+%\usepackage{setspace}
+%\usepackage[round, longnamesfirst]{natbib} % for nice bibliography
+
+\input{newcommands}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sansmath}
+\sansmath
+
+
+\title{Something about ...}
+\submitted{April 2026}  %graduation date
+\author{Nilbert Nshoya}
+\mentor{Dilimulati Aierken}
+\advisor{Jerelle A.~Joseph} %
+\dedication{To me}
+
+
+\abstract{
+\input{./Chapters/abstract}
+}
+
+\acknowledgements{
+\input{./Chapters/acknow}
+}
+
+\begin{document}
+\chapter{Introduction}\label{ch:intro}  %insert chapter title
+
+\input{./Chapters/intro} % and path to the .tex file (no need to include .tex)
+
+\chapter{Computational Methods}\label{ch:methods}
+\input{./Chapters/methods2}
+
+
+\input{./Chapters/results}
+
+\appendix
+\chapter{Code}
+\input{./Chapters/code}
+
+
+\bibliographystyle{abbrv}
+\bibliography{refs} \label{bib}
+
+
+\end{document}

@@ -1,0 +1,15 @@
+Title: Fig. 4.6  SASA vs residue for 1YMO-derived hairpin reference
+Segment: chain A, absolute residues 15-46
+Renumbered residues: 1-32
+Loop residues: [13, 14, 15, 16, 17, 18, 19, 20]
+Mean SASA: 154.6651 A^2
+Std SASA: 29.1554 A^2
+Min SASA: 109.9562 A^2 at residue 28
+Max SASA: 260.2319 A^2 at residue 16
+Loop mean SASA: 169.5586 A^2
+Loop max SASA: 260.2319 A^2
+Non-loop mean SASA: 149.7006 A^2
+Top 3 exposed residues:
+  Residue 16 (abs 30): 260.2319 A^2
+  Residue 30 (abs 44): 196.5516 A^2
+  Residue 17 (abs 31): 184.8088 A^2

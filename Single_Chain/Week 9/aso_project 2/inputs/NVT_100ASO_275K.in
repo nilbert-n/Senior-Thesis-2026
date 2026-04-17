@@ -1,0 +1,99 @@
+# ===============================
+# NVT Simulation at 275.0K
+# Data: configs/100ASO_unmod.dat
+# Total: 1000 ns production + 50 ns equilibration
+# ===============================
+
+shell mkdir -p outputs logs
+
+variable df      string configs/100ASO_unmod.dat
+variable T_target equal 275.0
+variable tag      string 100ASO_unmod
+
+units real
+boundary p p p
+atom_style full
+
+read_data ${df}
+log outputs/log.${tag}.lammps
+
+# ===============================
+# FORCE FIELD (same as original)
+# ===============================
+bond_style harmonic
+bond_coeff 1 7.5 5.9
+
+angle_style harmonic
+angle_coeff 1 5.0 150.0
+
+pair_style hybrid/overlay lj/cut 10.0 base/rna 18.0
+pair_modify shift yes
+pair_coeff * * lj/cut 2.0 8.9089871814
+
+pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+
+special_bonds lj 0.0 0.0 1.0
+neighbor 15.0 bin
+neigh_modify every 10 delay 0
+comm_style tiled
+timestep 10
+
+# ===============================
+# 1. MINIMIZATION
+# ===============================
+minimize 1.0e-4 1.0e-6 1000 10000
+reset_timestep 0
+
+# ===============================
+# 2. OUTPUTS
+# ===============================
+dump d1 all custom 50000 outputs/${tag}.lammpstrj id mol type q xu yu zu
+dump_modify d1 sort id
+
+thermo_style custom step pe ke etotal temp press density
+thermo 10000
+thermo_modify flush yes
+
+variable vpe equal pe
+variable vke equal ke
+variable vT  equal temp
+variable vE  equal etotal
+variable vRg equal gyration(all)
+
+fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg &
+    file outputs/thermo_${tag}_averaged.dat
+
+# ===============================
+# 3. EQUILIBRATION (NVT)
+# ===============================
+velocity all create ${T_target} 68493 rot yes dist gaussian
+
+# Langevin thermostat for equilibration
+fix fxlang all langevin ${T_target} ${T_target} 1000.0 38124
+fix fxnve  all nve
+fix recenter all momentum 1000 linear 1 1 1
+
+# Equilibration run
+run 5000000
+
+# ===============================
+# 4. PRODUCTION
+# ===============================
+# Reset averages for production
+unfix favg
+fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg &
+    file outputs/thermo_${tag}_production.dat
+
+restart 10000000 outputs/backup_${tag}.*.restart
+run 100000000
+
+write_data outputs/${tag}_final.data

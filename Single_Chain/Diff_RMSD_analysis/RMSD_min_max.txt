@@ -1,0 +1,49 @@
+(base) [nn9775@della9 outputs]$ # Search first 8160 frames, EXCLUDING frame 0 (default)
+python ovito.py --traj config_1_2DER_C.dat.lammpstrj --limit-frames 8160 --stat both
+== Minimum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 1051
+Timestep    : 52550000
+RMSD (Å)    : 45.394658
+== Maximum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 4147
+Timestep    : 207350000
+RMSD (Å)    : 132.119888
+(base) [nn9775@della9 outputs]$ python ovito.py --traj config_4_4GXY_A.dat.lammpstrj --limit-frames 8160
+ --stat both
+== Minimum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 1266
+Timestep    : 63300000
+RMSD (Å)    : 112.624657
+== Maximum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 4013
+Timestep    : 200650000
+RMSD (Å)    : 278.302326
+(base) [nn9775@della9 outputs]$ python ovito.py --traj config_5_5ML7_A.dat.lammpstrj --limit-frames 8160 --stat both
+== Minimum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 4985
+Timestep    : 249250000
+RMSD (Å)    : 56.396424
+== Maximum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 4795
+Timestep    : 239750000
+RMSD (Å)    : 168.367355
+(base) [nn9775@della9 outputs]$ python ovito.py --traj config_7_6G7Z_A.dat.lammpstrj --limit-frames 8160
+ --stat both
+== Minimum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 6876
+Timestep    : 343800000
+RMSD (Å)    : 94.833539
+== Maximum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 4167
+Timestep    : 208350000
+RMSD (Å)    : 228.191709
+(base) [nn9775@della9 outputs]$ python ovito.py --traj config_8_4U7U_L.dat.lammpstrj --limit-frames 8160
+ --stat both
+== Minimum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 3760
+Timestep    : 188000000
+RMSD (Å)    : 33.740959
+== Maximum RMSD to frame 0 (searched 8160 frames; excl. frame 0) ==
+Frame index : 7285
+Timestep    : 364250000
+RMSD (Å)    : 108.320449

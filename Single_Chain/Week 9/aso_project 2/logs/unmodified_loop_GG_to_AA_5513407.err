@@ -1,0 +1,3 @@
+srun: Job step aborted: Waiting up to 47 seconds for job step to finish.
+[2026-03-08T20:29:32.040] error: *** STEP 5513407.0 ON della-r3c3n3 CANCELLED AT 2026-03-08T20:29:32 DUE TO TIME LIMIT ***
+[2026-03-08T20:29:32.041] error: *** JOB 5513407 ON della-r3c3n3 CANCELLED AT 2026-03-08T20:29:32 DUE TO TIME LIMIT ***

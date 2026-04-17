@@ -1,0 +1,14 @@
+[nn9775@della9 aso_project 3]$ sbatch --parsable slurm/run_100ASO_250K.sh
+5829305
+[nn9775@della9 aso_project 3]$ squeue --me
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           5829305       cpu ASO100_2   nn9775 PD       0:00      1 (None)
+[nn9775@della9 aso_project 3]$ sbatch --parsable slurm/run_100ASO_275K.sh
+5829306
+[nn9775@della9 aso_project 3]$ sbatch --parsable slurm/run_100ASO_300K.sh
+5829314
+[nn9775@della9 aso_project 3]$ sbatch --parsable slurm/run_100ASO_325K.sh
+5829315
+[nn9775@della9 aso_project 3]$ sbatch --parsable slurm/run_100ASO_350K.sh
+5829316
+[nn9775@della9 aso_project 3]$ 

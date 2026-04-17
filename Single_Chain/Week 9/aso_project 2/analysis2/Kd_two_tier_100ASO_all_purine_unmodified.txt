@@ -1,0 +1,19 @@
+Simulation: 100ASO_all_purine_unmodified
+DAT: ./configs/100ASO_all_purine_unmodified.dat
+TRAJ: ./outputs/100ASO_all_purine_unmodified.lammpstrj
+Frames: 1361
+Duration_ns: 680.0000
+ASO_length: 10
+ASO_sequence: G G G A G G A A A A
+Total_ASOs: 100
+Box_lengths_A: 160.000000, 160.000000, 160.000000
+Volume_L: 4.096e-21
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.983101
+Mean_occupancy: 2.792065
+Max_occupancy: 6
+COM_cutoff_10_A: f_site=0.037472, Kd_M=1.0409686, n_binders=22, n_events=42, mean_dwell_frames=1.214286
+COM_cutoff_12_A: f_site=0.072741, Kd_M=0.51642521, n_binders=34, n_events=87, mean_dwell_frames=1.172414
+COM_cutoff_15_A: f_site=0.132990, Kd_M=0.26395189, n_binders=40, n_events=147, mean_dwell_frames=1.272109
+COM_cutoff_20_A: f_site=0.264511, Kd_M=0.11242958, n_binders=53, n_events=283, mean_dwell_frames=1.381625

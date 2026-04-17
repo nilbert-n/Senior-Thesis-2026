@@ -1,0 +1,31 @@
+%% Code file
+
+\begin{verbatim}
+% Question 1
+warning('off'); % To protect our nerves
+p = 0.05;
+K_E = 5;
+K_J = 10;
+K_S = 35;
+
+tmp1 = [];
+for i = 0:(K_E-1)
+     tmp1(i+1) = (K_E - i) * binopdf(i,50,p);
+end
+C_E = sum(tmp1)
+
+tmp2 = [];
+for i = (K_E+1):50
+    tmp2(i-K_E) = (i-K_E) * binopdf(i,50,p);
+end
+tmp3 = [];
+for i = (K_E + K_J +1):50
+    tmp3(i- K_E - K_J) = (i - K_E - K_J) * binopdf(i,50,p);
+end
+C_J = K_J - sum(tmp2) +sum(tmp3)
+
+C_S = K_S - sum(tmp3)
+
+% Sanity check
+C_E + C_J + C_S
+\end{verbatim}

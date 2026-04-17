@@ -1,0 +1,91 @@
+###############################################
+# Run ONE system: config_single_2.dat
+###############################################
+
+# ensure outputs_2 dir exists
+shell mkdir -p outputs_2
+
+clear
+
+# --- user settings ---
+variable myTemp      equal 298
+variable randomSeed  equal 2347
+
+# pick the one data file to run
+variable df  string config_single_2.dat
+
+units real
+dimension 3
+boundary p p p
+atom_style full
+
+# read the selected data file
+read_data ${df}
+
+# tag used for naming outputs (use the filename itself)
+variable tag string ${df}
+
+# log for this system
+log outputs_2/log.${tag}.lammps
+
+# sampling strides
+variable dump_stride   equal 10000
+variable thermo_stride equal 10000
+
+# bonded terms
+bond_style harmonic
+bond_coeff 1 7.5 5.9
+
+angle_style harmonic
+angle_coeff 1 5.0 150.0
+
+# nonbonded and base-pair terms
+pair_style hybrid/overlay lj/cut 10.0 base/rna 18.0
+
+# WCA-LJ (excluded volume)
+pair_coeff * * lj/cut 2.0 8.9089871814
+pair_modify shift yes
+
+# Base-pair interactions (A-1, C-2, G-3, U-4)
+pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #AA
+pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #AC
+pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #AG
+pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #AU
+pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #CC
+pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #CG
+pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #CU
+pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #GG
+pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #GU
+pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345 #UU
+
+special_bonds lj 0.0 0.0 1.0
+
+velocity        all create ${myTemp} ${randomSeed}
+
+neighbor  15.0 bin
+neigh_modify  every 10 delay 0
+comm_style    tiled
+
+timestep      10
+timer timeout 03:29:00
+
+fix           fxnve   all nve
+fix           fxlange all langevin ${myTemp} ${myTemp} 100000.0 43165
+fix           fxbal   all balance 1000 1.05 rcb
+
+dump          1 all custom ${dump_stride} outputs_2/${tag}_${myTemp}_nvt.lammpstrj id mol type q xu yu zu
+dump_modify   1 sort id
+
+thermo_style  custom step pe ke temp
+thermo        ${thermo_stride}
+thermo_modify flush yes
+
+# optional averaged thermo
+variable       vpe equal pe
+variable       vke equal ke
+variable       vT  equal temp
+variable       stride10 equal ${thermo_stride}*10
+fix            fa all ave/time ${thermo_stride} 10 ${stride10} v_vpe v_vke v_vT file outputs_2/thermo_${tag}_averaged.dat
+
+run 50000000
+write_data outputs_2/${tag}_final.data

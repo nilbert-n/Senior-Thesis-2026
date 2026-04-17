@@ -1,0 +1,78 @@
+# ===============================
+# NVT RESTART from step 90,000,000
+# System: 100ASO_mismatch_U5C_unmodified
+# UPDATE run N below: 100000000 - actual_restart_step
+# ===============================
+
+shell mkdir -p outputs logs
+
+variable T_target equal 300.0
+variable tag      string 100ASO_mismatch_U5C_unmodified
+
+read_restart outputs/backup_100ASO_mismatch_U5C_unmodified.90000000.restart
+
+log outputs/log.${tag}_restart.lammps
+
+# ===============================
+# FORCE FIELD (must re-specify after restart)
+# ===============================
+bond_style harmonic
+bond_coeff 1 7.5 5.9
+
+angle_style harmonic
+angle_coeff 1 5.0 150.0
+
+pair_style hybrid/overlay lj/cut 10.0 base/rna 18.0
+pair_modify shift yes
+pair_coeff * * lj/cut 2.0 8.9089871814
+
+pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+
+special_bonds lj 0.0 0.0 1.0
+neighbor 15.0 bin
+neigh_modify every 10 delay 0
+comm_style tiled
+timestep 10
+
+# ===============================
+# OUTPUTS
+# Separate trajectory file for restart portion
+# ===============================
+dump d1 all custom 50000 outputs/${tag}_restart.lammpstrj id mol type q xu yu zu
+dump_modify d1 sort id
+
+thermo_style custom step pe ke etotal temp press density
+thermo 10000
+thermo_modify flush yes
+
+variable vpe equal pe
+variable vke equal ke
+variable vT  equal temp
+variable vE  equal etotal
+variable vRg equal gyration(all)
+
+fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg &
+    file outputs/thermo_${tag}_production_restart.dat
+
+# ===============================
+# PRODUCTION (continued)
+# ===============================
+fix fxlang all langevin ${T_target} ${T_target} 1000.0 43425
+fix fxnve  all nve
+fix recenter all momentum 1000 linear 1 1 1
+
+restart 10000000 outputs/backup_${tag}_restart.*.restart
+
+# UPDATE THIS: 100000000 - actual step in restart filename
+run 10000000
+
+write_data outputs/${tag}_final.data

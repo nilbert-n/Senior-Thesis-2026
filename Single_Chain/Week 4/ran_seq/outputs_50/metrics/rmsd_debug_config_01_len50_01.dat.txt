@@ -1,0 +1,10 @@
+traj=config_01_len50_01.dat.lammpstrj
+core=config_01_len50_01.dat
+preferred_chain=None
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 4/ran_seq/outputs_50/seq1_rank_1.pdb
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 4/ran_seq/outputs_50/log.config_01_len50_01.dat.lammps
+timestep_fs=10.0
+traj_first_N=50
+ref_C3prime_N=50
+frames_with_numeric_RMSD=8161

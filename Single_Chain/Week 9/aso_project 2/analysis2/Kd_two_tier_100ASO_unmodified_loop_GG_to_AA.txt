@@ -1,0 +1,19 @@
+Simulation: 100ASO_unmodified_loop_GG_to_AA
+DAT: ./configs/100ASO_unmodified_loop_GG_to_AA.dat
+TRAJ: ./outputs/100ASO_unmodified_loop_GG_to_AA.lammpstrj
+Frames: 717
+Duration_ns: 358.0000
+ASO_length: 10
+ASO_sequence: G G G C U G U U U U
+Total_ASOs: 100
+Box_lengths_A: 160.000000, 160.000000, 160.000000
+Volume_L: 4.096e-21
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.944212
+Mean_occupancy: 2.061367
+Max_occupancy: 5
+COM_cutoff_10_A: f_site=0.058577, Kd_M=0.65117739, n_binders=9, n_events=25, mean_dwell_frames=1.680000
+COM_cutoff_12_A: f_site=0.100418, Kd_M=0.36281914, n_binders=11, n_events=48, mean_dwell_frames=1.520833
+COM_cutoff_15_A: f_site=0.181311, Kd_M=0.18272834, n_binders=19, n_events=90, mean_dwell_frames=1.500000
+COM_cutoff_20_A: f_site=0.331939, Kd_M=0.081323089, n_binders=27, n_events=169, mean_dwell_frames=1.591716

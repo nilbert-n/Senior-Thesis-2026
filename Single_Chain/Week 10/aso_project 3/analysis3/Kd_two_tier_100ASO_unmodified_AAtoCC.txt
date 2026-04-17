@@ -1,0 +1,19 @@
+Simulation: 100ASO_unmodified_AAtoCC
+DAT: ./configs/100ASO_unmodified_AAtoCC.dat
+TRAJ: ./outputs/100ASO_unmodified_AAtoCC.lammpstrj
+Frames: 2101
+Duration_ns: 1050.0000
+ASO_length: 10
+ASO_sequence: G G G C U G U U U U
+Total_ASOs: 100
+Box_lengths_A: 160.000000, 160.000000, 160.000000
+Volume_L: 4.096e-21
+Encounter_threshold_beads: 8
+Binding_threshold_beads: 10
+Encounter_fraction: 0.970014
+Mean_occupancy: 2.059495
+Max_occupancy: 6
+COM_cutoff_10_A: f_site=0.057116, Kd_M=0.66888955, n_binders=23, n_events=85, mean_dwell_frames=1.447059
+COM_cutoff_12_A: f_site=0.111851, Kd_M=0.32155631, n_binders=32, n_events=166, mean_dwell_frames=1.481928
+COM_cutoff_15_A: f_site=0.233698, Kd_M=0.13262566, n_binders=38, n_events=300, mean_dwell_frames=1.736667
+COM_cutoff_20_A: f_site=0.440267, Kd_M=0.051315506, n_binders=50, n_events=560, mean_dwell_frames=1.928571

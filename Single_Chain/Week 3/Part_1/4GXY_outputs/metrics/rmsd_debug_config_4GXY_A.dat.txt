@@ -1,0 +1,11 @@
+traj=config_4GXY_A.dat_298_nvt.lammpstrj
+core=config_4GXY_A.dat
+preferred_chain=A
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 3/outputs/4GXY.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 3/outputs/log.config_4GXY_A.dat.lammps
+timestep_fs=10.0
+traj_first_N=161
+ref_C3prime_N=162
+frames_with_numeric_RMSD=5001
+C3_counts_by_chain={'A': 162}

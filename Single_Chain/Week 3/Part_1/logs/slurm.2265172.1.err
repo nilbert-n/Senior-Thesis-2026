@@ -1,0 +1,2 @@
+srun: Job step aborted: Waiting up to 47 seconds for job step to finish.
+[2025-11-12T13:04:14.669] error: *** JOB 2265177 ON della-r3c3n12 CANCELLED AT 2025-11-12T13:04:14 DUE to SIGNAL Terminated ***

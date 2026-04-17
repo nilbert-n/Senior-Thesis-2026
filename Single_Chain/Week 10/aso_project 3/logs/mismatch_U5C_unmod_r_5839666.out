@@ -1,0 +1,28 @@
+Restart job started: Fri Mar 20 01:29:52 PM EDT 2026
+Running on: della-r3c3n1
+Tasks: 4
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+Reading restart file ...
+  restart file = 29 Aug 2024, LAMMPS = 29 Aug 2024
+  restoring atom style full from restart
+  orthogonal box = (-80 -80 -80) to (80 80 80)
+  1 by 2 by 2 MPI processor grid
+  restoring pair style hybrid/overlay from restart
+  restoring bond style harmonic from restart
+  restoring angle style harmonic from restart
+  1032 atoms
+  931 bonds
+  830 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        1       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_restart CPU = 0.004 seconds
+ERROR: Unknown fix ave/time keyword \ (src/fix_ave_time.cpp:1102)
+Last command: fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg \
+Restart job finished: Fri Mar 20 01:29:53 PM EDT 2026

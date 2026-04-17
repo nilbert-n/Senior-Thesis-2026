@@ -1,0 +1,135 @@
+###############################################
+# Enhanced sampling via simulated annealing
+# Runs over the Fig.5 configs that exist locally
+###############################################
+
+# build a list ONLY of fig5 configs that actually exist
+shell rm -f configs.lst
+shell ls -1 \
+  config_2DER*.dat config_6CK4*.dat config_4GXY*.dat \
+  config_5ML7*.dat config_4OJI*.dat config_4U7U*.dat \
+  config_4QLM*.dat config_4QLN*.dat \
+  2>/dev/null | sort >> configs.lst
+
+variable df file configs.lst
+shell mkdir -p outputs
+
+label loop
+  clear
+  # ---------- user knobs ----------
+  variable T_eq       equal 298
+  variable T_high     equal 430
+  variable T_low      equal 280
+  variable ncycle     equal 3
+
+  variable n_eq       equal 200000     # pre-equil steps at 298K
+  variable n_heat     equal 250000     # ramp 298 -> 430K
+  variable n_holdH    equal 250000     # hold at 430K
+  variable n_cool     equal 500000     # ramp 430 -> 280K
+  variable n_holdL    equal 250000     # hold at 280K
+  variable n_reheat   equal 200000     # bring back to 298K
+
+  variable dump_stride   equal 50000
+  variable thermo_stride equal 10000
+
+  # ---------- model & IO ----------
+  units real
+  boundary p p p
+  atom_style full
+  read_data ${df}
+  variable tag string ${df}
+  log outputs/log.${tag}.sa.lammps
+
+  bond_style  harmonic
+  bond_coeff  1 7.5 5.9
+  angle_style harmonic
+  angle_coeff 1 5.0 150.0
+
+  pair_style hybrid/overlay lj/cut 10.0 base/rna 18.0
+  pair_coeff * * lj/cut 2.0 8.9089871814
+  pair_modify shift yes
+
+  # Base-pair interactions (A-1, C-2, G-3, U-4)
+  pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+  pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+
+  special_bonds lj 0.0 0.0 1.0
+  neighbor 15.0 bin
+  neigh_modify every 10 delay 0
+  comm_style tiled
+  timestep 10
+  timer timeout 00:45:00
+
+  # dumps & thermo
+  dump 1 all custom ${dump_stride} outputs/${tag}_SA.lammpstrj id mol type q xu yu zu
+  dump_modify 1 sort id
+  thermo_style custom step pe ke temp
+  thermo ${thermo_stride}
+  thermo_modify flush yes
+  variable vpe equal pe
+  variable vke equal ke
+  variable vT  equal temp
+  variable stride10 equal ${thermo_stride}*10
+  fix fa all ave/time ${thermo_stride} 10 ${stride10} v_vpe v_vke v_vT file outputs/thermo_${tag}_SA_averaged.dat
+  
+
+  # ---------- integrator ----------
+  fix fxnve all nve
+
+  # --------- 0) Equilibrate at 298 K ----------
+  variable seed0 equal 43001
+  fix fxl all langevin ${T_eq} ${T_eq} 100000.0 ${seed0}
+  run ${n_eq}
+
+  # --------- 1) SA cycles ----------
+  variable c loop ${ncycle}
+label acyc
+
+  # heat: 298 -> Thigh
+  variable seedH equal 44000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_eq} ${T_high} 100000.0 ${seedH}
+  run ${n_heat}
+
+  # hold high
+  variable seedHH equal 45000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_high} ${T_high} 100000.0 ${seedHH}
+  run ${n_holdH}
+
+  # cool: Thigh -> Tlow
+  variable seedC equal 46000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_high} ${T_low} 100000.0 ${seedC}
+  run ${n_cool}
+
+  # hold low
+  variable seedLL equal 47000+${c}
+  unfix fxl
+  fix fxl all langevin ${T_low} ${T_low} 100000.0 ${seedLL}
+  run ${n_holdL}
+
+next c
+jump SELF afterSA
+label afterSA
+
+  # --------- 2) Reheat back to 298 K and short settle ----------
+  variable seedR equal 48001
+  unfix fxl
+  fix fxl all langevin ${T_low} ${T_eq} 100000.0 ${seedR}
+  run ${n_reheat}
+
+  # output final snapshot
+  write_data outputs/${tag}_SA_final.data
+
+  # next system
+  next df
+jump SELF loop

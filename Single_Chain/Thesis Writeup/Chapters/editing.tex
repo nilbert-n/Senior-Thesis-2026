@@ -1,0 +1,467 @@
+%% Chapter 2: Computational Methods
+%% FINAL VERSION (surgical voice pass)
+%%
+%% UNRESOLVED CONFLICTS (author must confirm before submission):
+%%   [CONFLICT-T]   Temperature: chapter uses 300 K;
+%%                  LAMMPS scripts consistently use 298 K.
+%%   [CONFLICT-TD]  Langevin damping: chapter uses tau=1,000 fs;
+%%                  LAMMPS scripts use 100,000 fs (= 100 ps).
+%%   [CONFLICT-SA]  SA schedule: see TODO in Section 2.3.4.
+%%   [CONFLICT-RL]  Run length: chapter states 1,000 ns;
+%%                  trajectory data indicates ~3.6 µs.
+
+%% CHANGE 1 (opening paragraph) — your verbatim wording
+Modelling how ASOs bind to mRNA required both a physically stable model of the target RNA and an appropriate simulation environment where ASOs can interact with it. In this chapter, we describe the modeling pipeline. Experimental 3-dimensional structures or NuFold predicted RNA sequences were prepared; coarse-grained molecular dynamics (CGMD) was then used to fold and equilibrate each sequence to determine the regions most likely to bind ASOs by assessing their secondary structure and Solvent-Accessible Surface Area (SASA); finally, ASO binding was quantified based on centre of mass (COM) distance. All simulations were run with LAMMPS~\cite{Thompson2022} as before, using the SIS coarse-grained RNA force field of Aierken and Joseph~\cite{Aierken2024} for RNA folding and binding studies. Subsequently, post-processing was carried out with custom Python code and the tool described above.
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{RNA Sequences and System Preparation}
+\label{sec:system_prep}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\subsection{3NJ6 Reference Structure}
+\label{sec:3nj6}
+
+Validation of our simulation parameters was carried out using an existing crystal structure of a CAG-repeat RNA duplex 3NJ6~\cite{Aierken2024}. Because this structure has already been validated against our SIS model’s parameters, we used it as a benchmark to test whether our force field has been properly implemented. In order to create the validation structure, we removed the complementary hydrogen atoms and crystallographic water molecules, leaving a single-stranded chain. The single strand was then used to extract the  C3$^\prime$ atom coordinates that were used as a fixed reference for calculating root mean square deviations (RMSD).
+
+\subsection{NuFold Benchmark Structures}
+\label{sec:nufold}
+
+In addition to the 3NJ6 benchmark, we tested the sequences from the results of Figure~5 of Kagaya et al.~\cite{Kagaya2025}, which evaluate how well NuFold predicts structures of a variety of RNA types. The seven sequences that were used were 2DER (C chain, 76 nts); 6CK4 (A chain, 117 nts); 4QLN (rp12, 125 nts); 5ML7 (A chain, 96 nts); 4OJI (A chain, 54 nts); 6G7Z (rp05); and 4U7U (L chain, 61 nts). 
+In order to predict the secondary structure, we first performed multiple sequence alighnement using rMRSA on the target's FASTA, and the used IPknot to perform secondary structure constraing predictions, and thirdky, Nufold executed using the training configeration preset. The rank-1 output PDB for each sequence represented the predicted three dimensional structure for the corresponding RNA. Each rank-1 PDB was subsequently read in order to obtain its C3$^\prime$ coordinates which would be stored as the fixed RMSD reference for all subsequent simulation runs for that specific RNA target.
+
+
+\subsection{Longer and mRNA-Scale Sequences}
+\label{sec:longer_seqs}
+
+Ten RNA sequences with the compositional criteria for natural occurring m-RNA sequences were randomly generated and sampled (between 50-200 bases). Additionally, sequences of approximately 1000 bases were used to test the ability of the pipeline to scale to mRNA-length chains. All sequence within this length range were folded according to the Simulated Annealing protocol outlined in Section~\ref{sec:sa}, and secondary structures were analyzed with RNALfold as explained in Section~\ref{sec:sec_struct}.
+
+\subsection{Coarse-Grained Topology Generation}
+\label{sec:topology}
+
+\subsubsection{Sequence Extraction from PDB Files}
+
+For each RNA target, the source PDB or PDB1 file was parsed to extract
+RNA residue information.
+ATOM and HETATM records were filtered to retain only recognized RNA and
+DNA nucleotide residue names; DNA thymine (T) residues were mapped to
+uracil (U) to enforce an RNA alphabet throughout.
+When multiple chains were present in a PDB file, the chain containing
+the greatest number of RNA residues was selected automatically; for
+the NuFold Fig.~5 targets, chain selections were fixed to match the
+assignments in Kagaya et al.~\cite{Kagaya2025}
+(e.g., chain~C for 2DER, chain~A for 6CK4).
+%% CHANGE 3 ("for downstream use") — audit fix: name the actual next step
+Residues were sorted in ascending sequence-number order; the resulting
+nucleotide sequence (A, C, G, U) was used as the basis for LAMMPS data
+file generation.
+
+
+The PDB files for all RNA molecules were analyzed to obtain inforamtion about the RNA residues. All ATOM and HETATM records that represent RNA/DNA nucleotide residue names were filtered out, and T residues, representing DNA thymine, were replaced with U (uracil) for consistent RNA alphabet. For cases where multiple chains existed in the PDB file for example the Nufold Fig.~5 targets, specific chain selections were made based on the assignemnts described in described in Kagaya et al. ~\cite{Kagaya2025}, i.e. chain C for 2DER and chain A for 6CK4. After sorting the residues in increasing order of their sequence numbers, the resulting nucleotide sequence (A, C, G, U) was used as the basis for generating the LAMMPS data files.
+
+
+\subsubsection{LAMMPS Data File Generation}
+
+The initial LAMMPS configeration places the beads leanearly along the $x$-axis at a with a 5.9~\AA \space spacing between beads -- equal to the harmonic bond equilibrium length. A fully extended chain is produced irrespective of the geometry of the source PDB file. Sequential 1-2 pair bonds and sequential 1-2-3 triplet angles are created according to the residue order. Three dimensional periodic boundary conditions are applied to the simulation box that is a cube with variable input edge lengths. Types of atoms, masses of atoms, positions of atoms at start time, connections of atoms via bonds, connections of atoms via angles, and lengths of edges of the simulation box are recorded into a LAMMPS configuration. 
+
+
+The C3$^\prime$ atom from the source PDB files are obtained used as a reference structure to calculate RMSDs; these atomic coordinates are not used as initial bead locations within the LAMMPS configuration.
+
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Coarse-Grained Force Field}
+\label{sec:forcefield}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+All simulation methods utilized the SIS coarse-grained RNA force-field that was developed by Nguyen, Hori, and Thirumalai\cite{Aierken2024}, with a simulation pipeline develiped by Aierken and Joseph. Each nucleotide was represented as a bead with interactions that have been parametrized to represent the relative energies associated with each type of standard Watson-Crick base pair interaction (C-G and A-U) and G-U wobble base pair interaction. The total potential energy is given by:
+
+\begin{equation}
+  U = U_{\mathrm{BA}} + U_{\mathrm{EV}} + U_{\mathrm{BP}},
+  \label{eq:Utot}
+\end{equation}
+
+where $U_{\mathrm{BA}}$ represents the bonded backbone potentials,
+$U_{\mathrm{EV}}$ is the excluded-volume potential due to repulsion, and $U_{\mathrm{BP}}$
+is the many-body base-pairing potential.
+
+
+The solvent is modeled implicitly; Therefore, all ASO -RNA simulations were conducted under an effective an effective ionic strength of 50~mM NaCl consistent with the
+conditions used to benchmark the COM-based $K_D$ method using single-molecule fluorescence resonance energy transfer (FRET) data from the SARS-CoV-2 nucleocapsid system~\cite{Alston2023}.
+
+
+
+
+
+
+\subsection{Bonded Interactions}
+
+The backbone covalent connectivity was modeled with a harmonic bond potential,
+\begin{equation}
+  U_{\mathrm{bond}} = k(r - r_0)^2,
+\end{equation}
+with a spring constant of $k = 7.5$~kcal\,mol$^{-1}$\,\AA$^{-2}$ and
+equilibrium length of $r_0 = 5.9$~\AA.
+The local stiffness of the backbone is captured by a harmonic angle potential,
+\begin{equation}
+  U_{\mathrm{angle}} = k_\theta(\theta - \theta_0)^2,
+\end{equation}
+with bending constant $k_\theta = 5.0$~kcal\,mol$^{-1}$\,rad$^{-2}$
+and equilibrium angle $\theta_0 = 150.0^\circ$, consistent with the
+extended geometry of single-stranded nucleic acid backbones.
+
+We also implement a standard Lennard-Jones 12 - 6 potential
+with $\varepsilon = 2.0$~kcal\,mol$^{-1}$ and $\sigma = 8.9090$~\AA\
+is shifted to zero at a cutoff of 10.0~\AA\ via the
+\texttt{pair\_modify shift} command, retaining only the repulsive core.
+The large $\sigma$ reflects the physical size of a nucleotide-level bead.
+
+\subsection{Base-Pairing Potential}
+
+The base pairing and stacking interactions in this system are modeled using a custom LAMMPS pair style \texttt{base/rna}~\cite{Aierken2024}, with a cutoff of 18.0~\AA. This pair style represents the anisotropic geometry of Watson-Crick base pairing using both inter-bead distances, four angles, and two dihedral angles to reproduce the A-form helix of RNA. The interaction strengths for each type of base pair were set as follows:
+$\varepsilon = -5.0$~kcal\,mol$^{-1}$, A -U and G -U wobble pairs at
+$\varepsilon = -3.33$~kcal\,mol$^{-1}$, and all non-complementary pairs
+at $\varepsilon = 0$.
+All types of base pairs have geometric parameters: the equilibrium contact distance of
+3.0~\AA, outer cutoff distance of 13.8~\AA, and shape parameters of
+$(1.5,\;0.5,\;1.8326,\;0.9425,\;1.8326,\;1.1345)$.
+
+
+
+
+
+Non-bonded interactions between atoms that are separated by less than one bond length (i.e., 1-2 and 1-3) are completely excluded from being calculated in order to prevent double-counting of bonded interactions. However, all 1-4 non-bonded interactions are still included at their full strength (\texttt{special\_bonds lj 0.0 0.0 1.0}). Neighbor lists are created using a bin algorithm with a skin distance of 15.0~\AA\ and are updated every 10 timesteps.
+
+
+
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Simulation Protocol}
+\label{sec:sim_protocol}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\subsection{Energy Minimization}
+
+Each System undergoes Conjugate Gradient Energy Minimization before any Dynamics are conducted on it. The Force and Energy tolerance levels used in this process were $10^{-4}$ kcal mol$^{-1}$ \AA$^{-1}$ and $10^{-6}$ kcal mol$^{-1}$. Also, the force evaluation limit was set at 10,000. This is done to remove steric clashes generated by Topology Generation using Coarse Graining.
+
+\subsection{NVT Equilibration}
+Each minimized system was run for 50~ns ($5 \times 10^{6}$ time steps and $\Delta t=10$ fs) in the canonical ensemble (NVT), as described above. The ASO simulations were also performed at temperatures of $298$ K and $300$ K.
+
+The NVT ensemble uses the NVE velocity-verlet integration method, coupled with a Langevin thermostat~\cite{Schneider1978}. The thermal coupling constant used by the Langevin thermostat has been set to $\tau = 100,000$ fs.
+
+The initial velocities were all sampled from a Gaussian distribution around the target temperature. The linear momentum associated with each system's center of mass was zeroed every 1,000 steps.
+
+\subsection{Production Runs}
+\label{sec:production}
+
+Sampling was done using production runs for both RNA and ASO under NVT conditions, but over different time scales: 1,000~ns for ASO simulations and 4~\textmu s for RNA simulations. 
+All restart files were generated every $10^7$ steps, and the final configuration was written to a LAMMPS-formatted data file. 
+Positions of all atoms were recorded every 50,000 timesteps (500~ps) with position information including ID’s for molecule/atom, types of molecules/atoms, charges on the atoms, and unwrapped cartesian coordinates (\texttt{xu yu zu}).
+At least 5 independent production runs were performed for each system utilized in calculating binding affinities (section~\ref{sec:binding_affinity}).
+
+
+\subsection{Enhanced Sampling via Simulated Annealing}
+\label{sec:sa}
+
+Standard NVT molecular dynamic simulations for nucleic acid 
+sequences having stable secondary structural elements are prone to kinetic 
+trapping prior to sampling the entire set of possible conformations. 
+%% CHANGE 5 (SA transition) — your exact wording; footnote adjusted to your wording
+Simulated annealing (SA) has been employed on both the NuFold 
+benchmark sequences and on the longer (200~nt or greater) random sequences.
+\footnote{Although the NuFold benchmark sequence lengths (54-125~nt) do not meet 
+the length criteria (200~nt) established for the random sequences, they have 
+compact, well defined tertiary structures that provide a realistic opportunity 
+for kinetic trapping during NVT simulation. Thus, simulated annealing was utilized.}
+The details of the simulated annealing procedure follow the implementation 
+of Aierken and Joseph \cite{Aierken2024}.
+
+We carried out a 10 step heating cycle that consisted of: ramp 298~K$\rightarrow T_\text{high}$ (2.5~ns) $\rightarrow$ hold at $T_\text{high}$ (2.5~ns) $\rightarrow$
+cool to 280~K (5~ns) $\rightarrow$ hold at 280~K (2.5~ns);
+
+The convergence of SA trajectories versus NVT runs was evaluated by comparison of
+convergence diagnostic values including $R_g$, RMSD, and potential energy.
+
+
+
+
+
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Trajectory Analysis}
+\label{sec:traj_analysis}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\subsection{Thermodynamic Observables}
+
+
+We collected values of potential energy, kinetic energy, total energy, temperature, pressure, and mass density at every 10,000 steps (100~ps) during the simulation. 
+The time averages are collected through block averaging, where instantaneous values are sampled every 10,000 steps and then concatenated into blocks of 10, written to an output file every 100,000 steps.
+
+
+\subsection{Structural Observables: $R_g$, RMSD, and RMSF}
+\label{sec:structural_obs}
+
+The radius of gyration $R_g$, backbone bead RMSD, and per-nucleotide
+root-mean-square fluctuation (RMSF) are computed from saved trajectory
+frames using the C3$^\prime$-based reference coordinates described in
+Sections~\ref{sec:3nj6} and~\ref{sec:nufold}.
+
+$R_g$ serves as the primary order parameter for monitoring global
+conformational state: a decreasing $R_g$ relative to the initial
+extended chain indicates compaction associated with secondary structure
+formation.
+
+%% CHANGE 6 (Kabsch) — your verbatim wording
+RMSD was computed at each saved frame after translating both the
+trajectory frame and the reference structure to their respective centers
+of mass and applying the Kabsch algorithm to obtain the optimal
+rigid-body superposition.
+For the 3NJ6 validation system, the average production-run RMSD is
+compared against the value reported by Aierken and
+Joseph~\cite{Aierken2024} to confirm correct force-field implementation.
+
+RMSF is computed per nucleotide bead over the aligned production
+trajectory.
+For each bead $i$,
+
+\begin{equation}
+  \mathrm{RMSF}_i = \sqrt{\frac{1}{F}\sum_{t=1}^{F}
+    \left|\mathbf{r}_i(t) - \langle\mathbf{r}_i\rangle\right|^2},
+  \label{eq:rmsf}
+\end{equation}
+
+where $\mathbf{r}_i(t)$ is the Kabsch-aligned position of bead $i$ at
+frame $t$, $\langle\mathbf{r}_i\rangle$ is its time-averaged position,
+and $F$ is the total number of sampled production frames.
+%% CHANGE 7 (RMSF downstream use) — your verbatim wording
+RMSF profiles were plotted by residue index; residues with elevated RMSF
+were treated as conformationally flexible and compared against the
+secondary-structure and SASA analyses when interpreting site
+accessibility.
+
+
+
+\subsection{Thermodynamics Observable }
+
+\subsection{Structural Observables: Rg, RMSD & RMSF} \label{sec:structural_obs}
+Radius of Gyration Rg , Backbone Bead RMSD & Per Nucleotide Root Mean Square Fluctuation (RMSF), are calculated from Trajectory Frames Saved Using Reference Coordinates C3’ Based (see Section~\ref{sec:3nj6} & Section~\ref{sec:nufold}) .
+The Radius of Gyration Rg will be the Primary Order Parameter for Global Conformational State. A Decrease in Radius of Gyration Rg Compared to Initial Extended Chain Indicates Compaction due to Secondary Structure Formation.
+%% CHANGE 6 (Kabsch) — your verbatim wordingRMSD was computed at each saved frame after translating both the trajectory frame and the reference structure to their respective centers of mass and applying the Kabsch algorithm to obtain the optimal rigid-body superposition. For the 3NJ6 validation system, the average production run RMSD will be compared to the value of the Aierken and Joseph report~\cite{Aierken2024} to confirm a Correct Implementation of Force Field.
+RMSF is computed per nucleotide bead along the aligned production trajectory. For each bead i:
+\begin{equation}\mathrm{RMSF}_i = \sqrt{\frac{1}{F}\sum_{t=1}^{F}\left|\mathbf{r}_i(t) - \langle\mathbf{r}_i\rangle\right|^2},\label{eq:rmsf}\end{equation}
+where r_i(t) is the Position of Kabsch Aligned Bead i at Frame t, \langle r_i \rangle is it's time averaged position, and F is the Total Number of Sampled Frames in the Production Run.
+
+
+
+
+
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Secondary Structure Analysis}
+\label{sec:sec_struct}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\subsection{Minimum Free Energy Prediction with ViennaRNA}
+
+Secondary structure predictions were computed with the ViennaRNA
+Package 2.0~\cite{Lorenz2011}.
+\texttt{RNAfold} was used to generate the minimum free energy (MFE)
+structure and base-pair probability matrix for each sequence using
+McCaskill's partition function algorithm with Turner 2004
+nearest-neighbor parameters.
+For sequences longer than 400~nt, \texttt{RNALfold} was used instead
+to compute locally stable substructures within a restricted base-pair
+span, making secondary structure analysis tractable at mRNA scale.
+Dot-bracket output from both programs was parsed to extract paired and
+unpaired nucleotide positions across all sequences.
+
+\subsection{Identification of Single-Stranded Open Sites}
+
+Nucleotide positions classified as unpaired in the MFE structure are
+designated \emph{open sites} and treated as candidate regions for ASO
+hybridization.
+Open sites were identified from ViennaRNA dot-bracket output and
+tabulated by sequence position and contiguous run length.
+These positions define the primary 2D accessibility criterion and are
+subsequently intersected with the 3D SASA criterion
+(Section~\ref{sec:sasa}) to generate a ranked candidate set.
+
+\subsection{Structure Visualization}
+
+Two-dimensional secondary structure representations were generated using
+the forna web tool, which renders RNA structure as a force-directed graph
+with nucleotides as nodes and base pairs as edges.
+forna diagrams were used to inspect folding topology, verify base-pair
+assignments from ViennaRNA output, and produce secondary structure
+figures.
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Solvent-Accessible Surface Area Analysis}
+\label{sec:sasa}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Secondary structure analysis identifies nucleotides that are unpaired in
+two dimensions, but a nucleotide can be unpaired yet sterically buried
+in a compact tertiary fold.
+SASA calculations address this gap: per-nucleotide SASA was computed
+from a representative set of evenly spaced production-run frames by
+rolling a probe sphere over the molecular surface.
+\textbf{[TODO: specify the SASA tool (e.g., FreeSASA, MDAnalysis, or
+custom Python script), probe sphere radius, and number and spacing of
+frames sampled.]}
+The resulting per-nucleotide values were time-averaged and plotted as a
+function of sequence position.
+Nucleotides with above-average SASA are treated as three-dimensionally
+accessible; those below the average are considered buried and excluded
+from the high-confidence candidate set.
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Integrated Binding Site Identification}
+\label{sec:site_id}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Candidate ASO target sites are identified by the intersection of the 2D
+and 3D accessibility criteria: a site is retained as high-confidence
+only when it is unpaired in the MFE structure \emph{and} has
+above-average per-nucleotide SASA across the production run.
+Sites that are open in 2D but buried in 3D are deprioritized as
+geometrically inaccessible to an incoming ASO molecule.
+The surviving candidates are passed to the binding affinity calculations
+described in Section~\ref{sec:binding_affinity}.
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{Quantifying ASO -RNA Binding Affinity}
+\label{sec:binding_affinity}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+%% CHANGE 8 (binding affinity section opening) — your verbatim wording
+After candidate binding regions had been identified, ASO -RNA
+interactions were quantified directly from CGMD trajectories as
+apparent dissociation constants ($K_D$).
+These values were computed using the COM distance framework of Alston,
+Soranno, and Holehouse~\cite{Alston2023}, as validated against the
+$K_D$ formulation of Tesei et al.~\cite{Tesei2021}.
+
+\subsection{Classification of Bound and Unbound States}
+\label{sec:bound_unbound}
+
+%% CHANGE 9 (minimum-image) — audit fix approved by you
+For each trajectory, the minimum distance between any ASO bead and any
+RNA bead is computed at every saved frame.
+Because trajectories are dumped as unwrapped Cartesian coordinates
+(\texttt{xu yu zu}), minimum-image correction is applied to recover
+the true periodic distance before classification.
+This distance distribution typically follows a bimodal profile: a
+short-distance peak corresponding to the bound state and a long-distance
+peak corresponding to the free, diffuse state~\cite{Alston2023}.
+Gaussian functions are fit to both peaks, and the threshold separating
+bound from unbound is placed at the distance that minimizes the overlap
+between the two distributions.
+Because the optimal threshold depends on the physical dimensions of
+both molecules, it is determined independently for each ASO -RNA pair.
+A frame is classified as bound only when five or more consecutive frames
+satisfy the distance criterion, filtering out brief stochastic collisions
+that do not represent stable hybridization events.
+
+\subsection{Binding Persistence and Closest-Approach Analysis}
+
+%% CHANGE 10 (binding persistence opener) — audit fix: drop meta-announcement
+\emph{Binding persistence} is defined as the number of production-run
+frames classified as bound for each free ASO molecule  -- a direct count
+of contact time.
+
+For systems where binding is sparse and $f_\text{bound}$ is
+near-quantized, a \emph{closest-approach cumulative distribution
+function} (CDF) provides a graded affinity ranking.
+For each free ASO molecule $k$, the minimum RNA -ASO distance achieved
+over the entire trajectory, $d_{\min,k}$, is recorded.
+The CDF
+
+\begin{equation}
+  P(d_{\min} \leq d) = \frac{1}{N_\text{ASO}}
+    \sum_{k=1}^{N_\text{ASO}} \mathbf{1}[d_{\min,k} \leq d]
+  \label{eq:cdf}
+\end{equation}
+
+%% CHANGE 11 (CDF closing) — audit fix: split into two clean sentences
+is plotted on a log scale as a function of the distance threshold $d$.
+This provides a graded affinity ranking based on closest-approach
+geometry, which is more informative than binding persistence alone when
+stable binding events are rare.
+
+\subsection{Apparent Dissociation Constant}
+\label{sec:kd}
+
+Let $f_{\mathrm{bound}}$ denote the fraction of production-run frames
+classified as bound.
+The apparent $K_D$ is then
+
+\begin{equation}
+  K_D = \frac{(1 - f_{\mathrm{bound}})^2}{N_A \, f_{\mathrm{bound}} \, V},
+  \label{eq:KD}
+\end{equation}
+
+where $N_A$ is Avogadro's number and $V$ is the simulation box volume
+in liters, giving $K_D$ in mol\,L$^{-1}$ (M).
+This expression follows from the law of mass action for a two-state
+binding equilibrium~\cite{Tesei2021}.
+Because the SIS force field encodes effective free energies at
+coarse-grained resolution, $K_D$ values are used comparatively to rank
+ASO variants rather than as absolute predictions of solution-phase
+affinity.
+
+\subsection{Normalized Binding Affinity ($K_A^*$)}
+\label{sec:KA_star}
+
+All $K_D$ values are normalized by the $K_D$ of the unmodified
+reference system (\texttt{25ASO\_unmod} binding to the target
+single-chain RNA).
+The normalized association constant is defined as
+
+\begin{equation}
+  K_A^* = \frac{K_A(\text{variant})}{K_A(\texttt{25ASO\_unmod})},
+  \qquad K_A = 1/K_D.
+  \label{eq:KA_star}
+\end{equation}
+
+$K_A^* > 1$ indicates tighter binding than the unmodified reference;
+$K_A^* < 1$ indicates weaker binding.
+This normalization follows Alston et al.~\cite{Alston2023}, in which
+simulated $K_A^*$ values showed semi-quantitative agreement with
+single-molecule FRET experiments when both were expressed relative to
+an internal reference.
+
+Error propagation for $K_A^*$ follows standard ratio error propagation:
+
+\begin{equation}
+  \sigma(K_A^*) = K_A^* \sqrt{\left(\frac{\sigma_A}{A}\right)^2
+    + \left(\frac{\sigma_B}{B}\right)^2},
+  \label{eq:error_prop}
+\end{equation}
+
+where $A$ and $B$ are the $K_A$ values of the variant and reference,
+and $\sigma_A$, $\sigma_B$ are their standard errors across a minimum
+of five independent simulation replicates.
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{ASO Chemical Modifications: System Variants}
+\label{sec:aso_variants}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+\textbf{[TODO: Describe the specific ASO chemical modifications studied
+(e.g., 2$^\prime$-OMe, 2$^\prime$-F, PS backbone, LNA), how each
+modification was encoded in the coarse-grained topology (different bead
+types? modified interaction parameters?), and how the variant data files
+were generated from the baseline \texttt{25ASO\_unmod} topology.
+Populate once Project~2 materials are available.]}
+
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\section{ASO Project 2: Extended Binding Analysis}
+\label{sec:project2}
+%% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+The binding affinity pipeline described in
+Section~\ref{sec:binding_affinity} was also applied to a second RNA
+target system.
+\textbf{[TODO: Populate once Project~2 materials are available.
+Required: target RNA sequence and length, ASO variants and modification
+states, LAMMPS data file names, any deviations from the standard
+protocol, and a table of $K_D$ and $K_A^*$ values.]}

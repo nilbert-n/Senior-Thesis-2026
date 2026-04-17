@@ -1,0 +1,15 @@
+Bound vs unbound CG accessibility proxy
+DAT: configs/25ASO_unmod.dat
+TRAJ: outputs/25ASO_unmod.lammpstrj
+Frames processed: 2101
+Bound frames: 146
+Unbound frames: 1955
+Loop residues: [13, 14, 15, 16, 17, 18, 19, 20]
+Bead radius (A): 4.0000
+Probe radius (A): 1.4000
+Docking bead cutoff (A): 16.8000
+Docking COM cutoff (A): 12.0000
+Docking dwell threshold: 1
+Loop mean bound proxy: 200.287524 A^2
+Loop mean unbound proxy: 200.440265 A^2
+Loop mean delta (bound-unbound): -0.152740 A^2

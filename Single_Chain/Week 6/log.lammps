@@ -1,0 +1,72 @@
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+# ===============================
+# ~4 µs Simulated Annealing (10 cycles)
+# Cycles: 298 -> 500 -> 298 K
+# Physics dump only (no recentering)
+# ===============================
+
+shell mkdir -p outputs
+clear
+  using 1 OpenMP thread(s) per MPI task
+
+# Replace this with the system you want
+variable df string config_1YMO_aneal_r.dat
+
+# Temperatures
+variable T_eq   equal 298
+variable T_high equal 500
+
+# Total: ~4 µs @ 10 fs (4e8 steps)
+variable ncycle equal 10
+
+# Bookend equilibration: 40 ns = 4M steps
+variable n_eq     equal 4000000
+variable n_reheat equal 4000000
+
+# Per-cycle timing (total 40M per cycle)
+variable n_heat   equal 8000000
+variable n_holdH  equal 8000000
+variable n_cool   equal 16000000
+variable n_holdL  equal 8000000
+
+# Output cadence
+variable dump_stride   equal 50000
+variable thermo_stride equal 10000
+variable stride10      equal ${thermo_stride}*10
+variable stride10      equal 10000*10
+
+units real
+boundary p p p
+atom_style full
+
+read_data ${df}
+read_data config_1YMO_aneal_r.dat
+Reading data file ...
+  orthogonal box = (-50 -50 -50) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  42 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  orthogonal box = (-50 -50 -50) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading bonds ...
+  40 bonds
+  reading angles ...
+  38 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.009 seconds
+variable tag string ${df}
+variable tag string config_1YMO_aneal_r.dat
+log outputs/log.${tag}.lammps
+log outputs/log.config_1YMO_aneal_r.dat.lammps

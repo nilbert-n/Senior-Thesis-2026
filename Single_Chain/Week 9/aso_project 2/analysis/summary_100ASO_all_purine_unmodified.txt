@@ -1,0 +1,18 @@
+Simulation: 100ASO_all_purine_unmodified
+Frames: 1361
+Duration: 680.0 ns
+ASO length: 10 beads
+ASO sequence: G G G A G G A A A A
+Free ASOs: 99
+Docked bound fraction: 3.60%
+Free ASOs ever bound: 59/99
+HP RMSD: 30.08 ± 8.08 Å
+ASO RMSD: 3.91 ± 1.40 Å
+Complex Rg: 171.85 ± 63.92 Å
+Hairpin Rg: 32.68 ± 5.74 Å
+Mean PE: 472.65 kcal/mol
+Mean T: 300.10 K
+
+Per-bead contact prob: [0.019 0.025 0.027 0.031 0.03  0.029 0.028 0.026 0.024 0.021]
+Per-bead ΔG: [2.33 2.17 2.12 2.04 2.06 2.07 2.1  2.13 2.19 2.29] kcal/mol
+Free ASO bound counts: [2, 18, 8, 8, 41, 11, 8, 20, 18, 107, 2, 132, 38, 3, 1, 3, 34, 23, 45, 1, 2, 35, 8, 32, 24, 1, 83, 41, 9, 7, 20, 4, 10, 3, 14, 5, 10, 4, 13, 2, 3, 6, 2, 26, 32, 1, 3, 34, 6, 17, 35, 10, 2, 2, 8, 5, 8, 261, 14]

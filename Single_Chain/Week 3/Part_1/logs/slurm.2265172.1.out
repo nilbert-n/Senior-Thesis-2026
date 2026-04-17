@@ -1,0 +1,100 @@
+Running SA on: config_1_2DER_C.dat
+LAMMPS (29 Aug 2024)
+  using 1 OpenMP thread(s) per MPI task
+  using 1 OpenMP thread(s) per MPI task
+Reading data file ...
+  orthogonal box = (-500.6 -500.6 -500.6) to (500.6 500.6 500.6)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  74 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  orthogonal box = (-500.6 -500.6 -500.6) to (500.6 500.6 500.6)
+  1 by 1 by 1 MPI processor grid
+  reading bonds ...
+  73 bonds
+  reading angles ...
+  72 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.009 seconds
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        1       
+  special bond factors coul:  0        0        0       
+     2 = max # of 1-2 neighbors
+     2 = max # of 1-3 neighbors
+     4 = max # of 1-4 neighbors
+     6 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+New timer settings: style=normal  mode=nosync  timeout=03:00:00
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+The log file lists these citations in BibTeX format.
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 10 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 33
+  ghost atom cutoff = 33
+  binsize = 16.5, bins = 61 61 61
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair lj/cut, perpetual, trim from (2)
+      attributes: half, newton on, cut 25
+      pair build: trim
+      stencil: none
+      bin: none
+  (2) pair base/rna, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 0
+  Time step     : 10
+  Walltime left : 2:59:59.99
+Per MPI rank memory allocation (min/avg/max) = 8.369 | 8.369 | 8.369 Mbytes
+   Step         PotEng         KinEng          Temp     
+         0   98.696042      0              0            
+     10000   39.575229      61.440122      282.35462    
+     20000   33.301398      76.094012      349.69814    
+     30000   30.803376      75.717939      347.96985    
+     40000   30.799791      65.107901      299.2103     
+     50000   28.035233      57.430868      263.92967    
+     60000   24.152311      61.452471      282.41138    
+     70000   17.143474      60.129286      276.33054    
+     80000   19.544382      68.447944      314.55982    
+     90000   12.426596      62.830565      288.74455    
+    100000   3.7727763      76.914343      353.46806    
+    110000   1.259854       70.186351      322.54885    
+    120000   8.3616809      59.648723      274.12206    
+    130000   6.9204988      56.553887      259.89941    
+    140000   6.8875229      65.546537      301.22609    
+    150000   9.8369236      64.210848      295.08779    
+    160000   2.7736507      59.566378      273.74363    
+    170000   4.2279508      67.646424      310.87635    
+    180000   9.6190044      59.751288      274.59341    
+    190000   8.1564592      69.844283      320.97684    
+    200000   3.8972514      68.691469      315.67896    
+    210000   7.1341293      66.429688      305.28471    
+    220000  -5.1458996      70.423599      323.63915    
+    230000  -14.12269       63.381786      291.27775    
+    240000  -14.633776      73.737027      338.86636    
+    250000  -11.275988      63.601034      292.28533    
+    260000  -16.359292      75.346319      346.26203    
+    270000  -15.002171      71.59882       329.04       
+    280000  -25.378567      71.167264      327.05674    

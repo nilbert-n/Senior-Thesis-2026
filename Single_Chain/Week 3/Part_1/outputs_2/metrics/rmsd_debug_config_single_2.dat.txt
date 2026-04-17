@@ -1,0 +1,14 @@
+traj=config_single_2.dat_298_nvt.lammpstrj
+core=config_single_2.dat
+preferred_chain=A
+used_chain=A
+pdb_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 3/outputs_2/3NJ6.pdb1
+log_path=/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 3/outputs_2/log.config_single_2.dat.lammps
+timestep_fs=10.0
+traj_first_N=26
+ref_C3prime_after_exclude_N=20
+exclude_res_pairs=[(4, 'A')]
+exclude_res_nums=[]
+exclude_icodes=[]
+frames_with_numeric_RMSD=5001
+C3_counts_by_chain={'A': 20}
