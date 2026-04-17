@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import FuncFormatter
 
 apply_style()
 
@@ -58,11 +59,12 @@ im = ax.imshow(prob10, aspect="auto", origin="lower",
                cmap=cmap, vmin=0, vmax=vmax, interpolation="nearest")
 
 cbar = fig.colorbar(im, ax=ax, shrink=0.9, pad=0.02)
-cbar.set_label(f"P(contact)   ×10⁻³ max = {vmax*1e3:.2f}", fontsize=8)
+cbar.set_label(f"P(contact)   ×10⁻³  (max = {vmax*1e3:.2f})", fontsize=8)
 cbar.ax.tick_params(labelsize=7)
-# Format colorbar ticks in ×10⁻³
-cbar.formatter.set_powerlimits((-3, -3))
-cbar.update_ticks()
+# Ticks shown as the raw value in units of 10⁻³ — keeps the label
+# and the tick scale consistent (avoids the matplotlib ScalarFormatter
+# stamping an independent "1e-4" offset on the colour bar).
+cbar.ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{x*1e3:.1f}"))
 
 n_aso, n_hp = prob10.shape
 ax.set_yticks(range(n_aso))

@@ -196,6 +196,85 @@ def make_loop_rmsf_summary() -> list[dict]:
     ]
 
 
+# ── SASA profile (fig 10) ────────────────────────────────────────────────────
+def make_sasa_profile() -> list[dict]:
+    """
+    Fabricated per-residue SASA values that mirror the real
+    ``sasa_fig46/fig_4_6_sasa_vs_residue.csv`` layout
+    (32 residues, loop = residues 13-20, one high-SASA peak at residue 16).
+    """
+    rng = _rng()
+    rel_res = np.arange(1, 33)
+    loop = set(range(13, 21))
+    sasa = np.empty(32)
+    for i, r in enumerate(rel_res):
+        base = 150 + rng.normal(0, 20)
+        if r in loop:
+            base += 20
+            if r == 16:
+                base = 260   # exposed apex
+            elif r == 17:
+                base = 185
+        sasa[i] = max(80, base)
+    rows = []
+    for r_rel, s in zip(rel_res, sasa):
+        rows.append(dict(
+            relative_residue=int(r_rel),
+            absolute_residue=int(r_rel + 14),
+            region="loop" if int(r_rel) in loop else "non-loop",
+            sasa_total_A2=float(s),
+        ))
+    return rows
+
+
+# ── Kd and RMSF campaign summary CSVs (figs 11, 12) ─────────────────────────
+def make_rmsf_campaign_summary() -> list[dict]:
+    """
+    Rows that mirror ``rmsf_campaign_pdbref/rmsf_campaign_summary.csv``
+    — baseline ASO-count series (25/50/100/200) plus 100-ASO design
+    variants. Only the columns read by fig11 are populated.
+    """
+    return [
+        dict(name="25ASO_unmod",                        loop_mean_rmsf_A=29.02),
+        dict(name="50ASO_unmod",                        loop_mean_rmsf_A=26.87),
+        dict(name="100ASO_unmod",                       loop_mean_rmsf_A=31.45),
+        dict(name="200ASO_unmod",                       loop_mean_rmsf_A=24.64),
+        dict(name="100ASO_scrambled_unmodified",        loop_mean_rmsf_A=30.39),
+        dict(name="100ASO_unmodified_AAtoCC",           loop_mean_rmsf_A=28.65),
+        dict(name="100ASO_mismatch_U5C_unmodified",     loop_mean_rmsf_A=28.05),
+        dict(name="100ASO_mismatch_G6A_unmodified",     loop_mean_rmsf_A=26.44),
+        dict(name="100ASO_truncated_unmodified",        loop_mean_rmsf_A=26.25),
+        dict(name="100ASO_all_purine_unmodified",       loop_mean_rmsf_A=24.71),
+        dict(name="100ASO_extended_12mer_unmodified",   loop_mean_rmsf_A=24.04),
+        dict(name="100ASO_extended_14mer_unmodified",   loop_mean_rmsf_A=23.61),
+        dict(name="100ASO_unmodified_loop_GG_to_AA",    loop_mean_rmsf_A=23.19),
+    ]
+
+
+def make_kd_campaign_summary() -> list[dict]:
+    """
+    Rows that mirror ``kd_two_tier_campaign_summary.csv`` for the COM ≤
+    12 Å cutoff column. Values in mM (multiplied by 1000 vs molar in
+    the real CSV).
+    """
+    return [
+        dict(name="25ASO_unmod",                         kd_mM=135.3),
+        dict(name="50ASO_unmod",                         kd_mM=290.2),
+        # 100ASO_unmod Kd is NaN at com=12 in the real CSV (not bound),
+        # so it doesn't appear in the count-series panel.
+        dict(name="200ASO_unmod",                        kd_mM=349.7),
+        dict(name="100ASO_truncated_unmodified",         kd_mM=243.0),
+        dict(name="100ASO_unmodified_AAtoCC",            kd_mM=321.6),
+        dict(name="100ASO_unmodified_loop_GG_to_AA",     kd_mM=355.3),
+        dict(name="100ASO_mismatch_G6A_unmodified",      kd_mM=534.6),
+        dict(name="100ASO_all_purine_unmodified",        kd_mM=558.9),
+        dict(name="100ASO_scrambled_unmodified",         kd_mM=740.5),
+        dict(name="100ASO_mismatch_U5C_unmodified",      kd_mM=948.4),
+        dict(name="100ASO_extended_12mer_unmodified",    kd_mM=1152.1),
+        dict(name="100ASO_extended_14mer_unmodified",    kd_mM=2494.2),
+    ]
+
+
 # ── Safe loader: real data if present, fabricated data otherwise ─────────────
 def load_or_fake(real_path: str, faker):
     """
