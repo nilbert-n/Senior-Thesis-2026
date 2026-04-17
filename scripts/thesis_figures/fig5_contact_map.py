@@ -2,43 +2,43 @@
 Figure 5 – ASO–hairpin contact probability map.
 
 Heatmap of the time-averaged contact probability P(contact) for every
-ASO bead × hairpin bead pair (cutoff 16.56 Å).  TBP (triple-base-pair)
-contacts identified from the literature are marked with open squares.
+(ASO bead × hairpin bead) pair at a 16.56 Å cutoff.  TBP (triple-base-
+pair) contacts from the literature are marked with open red squares.
+The hairpin loop region (residues 13–20) is shaded in pale red.
 
-The colour scale is normalised to the data maximum (not to 1.0) because
-the overall contact probabilities in this CG run are low; this choice
-preserves the spatial pattern of the binding footprint.
+The colour scale is normalised to the data maximum (≈ 10⁻³) because
+overall contact probabilities are low in this short NVE run; the
+scientific content is the spatial pattern, not the absolute magnitude.
 
 Data source:
-    contact_results.npz → prob10, tbp_names, tbp_probs
-    parsed_data.npz     → aso_labels, hp_labels
-Output:
-    Figures/thesis_results/fig5_contact_map.{png,pdf}
+    Week 8/analysis/contact_results.npz  → prob10, tbp_names, tbp_probs
+    Week 8/analysis/parsed_data.npz      → aso_labels, hp_labels
 """
-
-import sys, os
+from __future__ import annotations
+import os, sys
 sys.path.insert(0, os.path.dirname(__file__))
-from _style import apply_style, COLORS, save_fig
+from _style import apply_style, COLORS, save_fig, add_footnote
+from _preview_data import (load_or_fake, make_contact_results,
+                           make_parsed_data)
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle
 
 apply_style()
 
 CON = "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 8/analysis/contact_results.npz"
 PRS = "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 8/analysis/parsed_data.npz"
+c = load_or_fake(CON, make_contact_results)
+p = load_or_fake(PRS, make_parsed_data)
 
-c      = np.load(CON)
-p      = np.load(PRS, allow_pickle=True)
+prob10     = np.asarray(c["prob10"])         # (10, 32)
+aso_labels = np.asarray(p["aso_labels"])
+hp_labels  = np.asarray(p["hp_labels"])
 
-prob10     = c["prob10"]       # (10, 32)
-tbp_names  = c["tbp_names"]   # ['U5·A21', ...]
-hp_labels  = p["hp_labels"]   # ['11(G)', '12(C)', ...]
-aso_labels = p["aso_labels"]  # ['1(G)', ...]
-
-# TBP contact positions (ASO bead idx, HP bead idx) — matches 03_contact_analysis.py
+# TBP contact positions (ASO bead idx, HP bead idx) — from literature
 TBP = [
     ("U5·A21",  4,  6),
     ("U5·A31",  4, 16),
@@ -47,57 +47,52 @@ TBP = [
     ("U10·A36", 9, 21),
 ]
 
-# ── Figure ────────────────────────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(7.5, 4.0))
+fig, ax = plt.subplots(figsize=(6.2, 3.4))
 
-# Custom colormap: white → light blue → blue → deep blue
 cmap = mcolors.LinearSegmentedColormap.from_list(
     "contact_blues",
-    ["#f7fbff", "#9ecae1", "#3182bd", "#08306b"])
+    ["#FFFFFF", "#C6DBEF", "#6BAED6", "#2171B5", "#08306B"])
 
 vmax = max(prob10.max(), 1e-4)
 im = ax.imshow(prob10, aspect="auto", origin="lower",
                cmap=cmap, vmin=0, vmax=vmax, interpolation="nearest")
 
-cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.02)
-cbar.set_label("Contact probability  (cutoff 16.56 Å)", fontsize=10)
+cbar = fig.colorbar(im, ax=ax, shrink=0.9, pad=0.02)
+cbar.set_label(f"P(contact)   ×10⁻³ max = {vmax*1e3:.2f}", fontsize=8)
+cbar.ax.tick_params(labelsize=7)
+# Format colorbar ticks in ×10⁻³
+cbar.formatter.set_powerlimits((-3, -3))
+cbar.update_ticks()
 
-# Tick labels
 n_aso, n_hp = prob10.shape
 ax.set_yticks(range(n_aso))
-ax.set_yticklabels(aso_labels, fontsize=8)
-# Show every 4th hp label to avoid crowding
+ax.set_yticklabels(aso_labels, fontsize=7)
 hp_ticks = list(range(0, n_hp, 4))
 ax.set_xticks(hp_ticks)
-ax.set_xticklabels([hp_labels[i] for i in hp_ticks], fontsize=8,
+ax.set_xticklabels([hp_labels[i] for i in hp_ticks], fontsize=7,
                    rotation=40, ha="right")
 
-# Mark loop region on x-axis (HP beads 2–9 in 0-based relative idx = residues 13–20)
-# From rmsf_campaign_summary: loop_residues = 13,14,15,16,17,18,19,20
-# Relative to HP bead 0 (residue 11) → loop bead indices 2-9
-ax.axvspan(1.5, 9.5, color=COLORS["lred"], alpha=0.10, zorder=0, label="Hairpin loop")
+# Loop region (residues 13–20 = HP bead indices 2–9)
+ax.axvspan(1.5, 9.5, color=COLORS["lred"], alpha=0.18, zorder=0)
 
-# Mark TBP contacts
-for name, ai, hi, in TBP:
-    ax.plot(hi, ai, "s", ms=9, mfc="none",
-            mec=COLORS["red"], mew=1.8, zorder=5)
+for name, ai, hi in TBP:
+    ax.plot(hi, ai, "s", ms=8, mfc="none",
+            mec=COLORS["red"], mew=1.5, zorder=5)
 
 ax.set_xlabel("Hairpin bead")
 ax.set_ylabel("Docked ASO bead")
-ax.set_title("ASO–hairpin contact probability map  (docked ASO, 3.64 µs NVE)")
+ax.set_title("ASO–hairpin contact map")
 
-# Legend
-legend_handles = [
-    Line2D([0], [0], marker="s", ms=8, mfc="none",
-           mec=COLORS["red"], mew=1.8, lw=0, label="TBP contact site"),
-    plt.Rectangle((0, 0), 1, 1, fc=COLORS["lred"], alpha=0.3,
-                  label="Hairpin loop  (res. 13–20)"),
-]
-ax.legend(handles=legend_handles, loc="upper right", fontsize=9)
+ax.legend(handles=[
+    Line2D([0], [0], marker="s", ms=7, mfc="none",
+           mec=COLORS["red"], mew=1.5, lw=0, label="TBP contact (lit.)"),
+    Rectangle((0, 0), 1, 1, fc=COLORS["lred"], alpha=0.4,
+              label="Hairpin loop (13–20)"),
+], loc="upper right", ncol=1)
 
-fig.text(0.01, 0.01,
-         "Colorscale normalised to data maximum (not 1.0) to preserve "
-         "spatial pattern.  TBP: triple-base-pair contacts from literature.",
-         fontsize=7, color=COLORS["gray"], style="italic")
+add_footnote(fig, "Contact cutoff: 16.56 Å (CG model).  Colourscale "
+                  "normalised to data maximum.  TBP = triple-base-pair "
+                  "contacts from published 1YMO–ASO structures.",
+             reserve=0.36)
 
 save_fig(fig, "fig5_contact_map")

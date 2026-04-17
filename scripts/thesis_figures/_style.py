@@ -1,68 +1,161 @@
 """
 Shared publication style for all thesis figures.
-Import at the top of each figure script:
-    import sys, os; sys.path.insert(0, os.path.dirname(__file__))
-    from _style import apply_style, COLORS, OUTDIR, save_fig
-"""
 
+Design principles
+-----------------
+* Paul-Tol "bright" palette (colour-blind-safe).
+* Regular-weight, short titles (the LaTeX ``\\caption{}`` carries the
+  descriptive text in the thesis writeup).
+* No gridlines by default — individual figures may turn them on locally
+  where they help reading (e.g. bar / z-score plots).
+* Footer "methods/caveat" text is rendered safely below the plotting
+  axes via :func:`add_footnote` so it never collides with the x-axis
+  label (the old pattern ``fig.text(0.01, 0.01, ...)`` + ``bbox='tight'``
+  placed the text on top of the x-label).
+* PDF output is the default — vector, font-embedded, writeup-ready.
+* Output directory is resolved in this order:
+    1. ``$THESIS_FIG_OUT``  (environment variable, explicit override)
+    2. ``/scratch/gpfs/JERELLE/nilbert/Figures/thesis_results``
+       (Princeton cluster, when present)
+    3. ``<repo>/Figures/thesis_results``  (always works from a laptop)
+
+Import at the top of each figure script::
+
+    import sys, os; sys.path.insert(0, os.path.dirname(__file__))
+    from _style import apply_style, COLORS, save_fig, add_footnote
+"""
+from __future__ import annotations
+
+import os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
-import os
 
-# ── Output directory ─────────────────────────────────────────────────────────
-OUTDIR = "/scratch/gpfs/JERELLE/nilbert/Figures/thesis_results"
-os.makedirs(OUTDIR, exist_ok=True)
 
-# ── Consistent color palette (colorbrewer-inspired) ──────────────────────────
+# ── Output directory resolution ──────────────────────────────────────────────
+def _resolve_outdir() -> str:
+    explicit = os.environ.get("THESIS_FIG_OUT")
+    if explicit:
+        os.makedirs(explicit, exist_ok=True)
+        return explicit
+
+    cluster = "/scratch/gpfs/JERELLE/nilbert/Figures/thesis_results"
+    if os.path.isdir(os.path.dirname(cluster)):
+        os.makedirs(cluster, exist_ok=True)
+        return cluster
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    repo_root = os.path.abspath(os.path.join(here, "..", ".."))
+    repo_out = os.path.join(repo_root, "Figures", "thesis_results")
+    os.makedirs(repo_out, exist_ok=True)
+    return repo_out
+
+
+OUTDIR = _resolve_outdir()
+
+
+# ── Colour palette: Paul-Tol "bright" (colour-blind safe) ────────────────────
+#  Reference: https://personal.sron.nl/~pault/  (§3 "Bright qualitative scheme")
 COLORS = {
-    "blue":   "#2166ac",
-    "red":    "#d6604d",
-    "green":  "#4dac26",
-    "orange": "#e08214",
-    "purple": "#762a83",
-    "gray":   "#636363",
-    "lblue":  "#92c5de",   # light blue (fill / band)
-    "lred":   "#f4a582",   # light red  (fill / band)
-    "lgray":  "#d9d9d9",   # light gray (fill / band)
+    "blue":   "#4477AA",
+    "red":    "#EE6677",
+    "green":  "#228833",
+    "yellow": "#CCBB44",
+    "cyan":   "#66CCEE",
+    "purple": "#AA3377",
+    "gray":   "#BBBBBB",
+    # Lighter variants for fills / bands (hand-mixed 40 % towards white)
+    "lblue":  "#A8BED4",
+    "lred":   "#F6B4BD",
+    "lgreen": "#A7CBAE",
+    "lgray":  "#E0E0E0",
+    # Backwards-compat aliases used by a handful of older scripts
+    "orange": "#CCBB44",   # maps onto Tol yellow, readable alongside blue/red
 }
 
-# ── Seaborn-paper-like rcParams (pure matplotlib, no seaborn dependency) ─────
+
+# ── Global rcParams — journal-style defaults ─────────────────────────────────
 def apply_style():
     mpl.rcParams.update({
-        "font.family":        "sans-serif",
-        "font.sans-serif":    ["DejaVu Sans", "Arial", "Helvetica", "Liberation Sans"],
-        "font.size":          11,
-        "axes.labelsize":     12,
-        "axes.titlesize":     12,
-        "axes.titleweight":   "bold",
-        "xtick.labelsize":    10,
-        "ytick.labelsize":    10,
-        "legend.fontsize":    9,
-        "legend.frameon":     True,
-        "legend.framealpha":  0.85,
-        "legend.edgecolor":   "#cccccc",
-        "axes.linewidth":     0.8,
-        "axes.spines.top":    False,
-        "axes.spines.right":  False,
-        "axes.grid":          True,
-        "grid.color":         "#cccccc",
-        "grid.alpha":         0.5,
-        "grid.linewidth":     0.5,
-        "lines.linewidth":    1.6,
-        "figure.facecolor":   "white",
-        "axes.facecolor":     "white",
-        "figure.dpi":         150,       # screen preview
-        "savefig.dpi":        300,
-        "savefig.bbox":       "tight",
-        "savefig.pad_inches": 0.05,
-        "pdf.fonttype":       42,        # embed fonts in PDF
-        "ps.fonttype":        42,
+        # Fonts
+        "font.family":         "sans-serif",
+        "font.sans-serif":     ["Arial", "Helvetica", "DejaVu Sans",
+                                "Liberation Sans"],
+        "font.size":           9,
+        "axes.labelsize":      9,
+        "axes.titlesize":      10,
+        "axes.titleweight":    "regular",   # NOT bold — journal convention
+        "axes.titlelocation":  "left",      # short labels sit top-left
+        "axes.titlepad":       6,
+        "xtick.labelsize":     8,
+        "ytick.labelsize":     8,
+        "legend.fontsize":     8,
+        "legend.frameon":      False,       # no boxed legends
+        "legend.handlelength": 1.6,
+        "legend.borderpad":    0.2,
+        # Spines
+        "axes.linewidth":      0.8,
+        "axes.spines.top":     False,
+        "axes.spines.right":   False,
+        # Ticks — short inward ticks, journal style
+        "xtick.direction":     "out",
+        "ytick.direction":     "out",
+        "xtick.major.size":    3.0,
+        "ytick.major.size":    3.0,
+        "xtick.major.width":   0.8,
+        "ytick.major.width":   0.8,
+        # Grid — OFF by default, enabled per-figure when helpful
+        "axes.grid":           False,
+        "grid.color":          "#dddddd",
+        "grid.alpha":          0.6,
+        "grid.linewidth":      0.5,
+        # Lines
+        "lines.linewidth":     1.4,
+        "lines.markersize":    4.5,
+        # Figure backgrounds
+        "figure.facecolor":    "white",
+        "axes.facecolor":      "white",
+        # Output
+        "figure.dpi":          120,         # screen preview only
+        "savefig.dpi":         300,         # unused for PDF but harmless
+        "savefig.bbox":        "tight",
+        "savefig.pad_inches":  0.03,
+        "pdf.fonttype":        42,          # embed TrueType in PDF
+        "ps.fonttype":         42,
     })
 
-def save_fig(fig, stem):
-    """Save PNG + PDF into OUTDIR."""
-    for ext in ("png", "pdf"):
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+def add_footnote(fig, text: str, *, y: float | None = None,
+                 color: str | None = None, reserve: float = 0.28):
+    """
+    Place a small italic methods/caveat note below every axis in ``fig``
+    without colliding with the x-axis label.
+
+    ``reserve`` is the fraction of figure height reserved for the x-axis
+    label + tick labels + footnote (default 0.28 ≈ 28 %). This is
+    intentionally generous so the footnote never crashes into rotated
+    tick labels. Call with a larger ``reserve`` for figures that also
+    carry a legend below the axes.
+    """
+    if color is None:
+        color = COLORS["gray"]
+    current = fig.subplotpars.bottom
+    fig.subplots_adjust(bottom=max(reserve, current))
+    if y is None:
+        y = 0.015
+    fig.text(0.5, y, text,
+             ha="center", va="bottom",
+             fontsize=7, style="italic", color=color,
+             wrap=True)
+
+
+def save_fig(fig, stem: str, *, formats=("pdf",)):
+    """
+    Save the figure into :data:`OUTDIR`. By default only PDF is emitted
+    (vector, font-embedded, thesis-ready). Pass ``formats=("pdf", "png")``
+    to also write a bitmap for slides or web.
+    """
+    for ext in formats:
         path = os.path.join(OUTDIR, f"{stem}.{ext}")
         fig.savefig(path)
         print(f"  Saved → {path}")
