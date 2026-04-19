@@ -1,0 +1,12 @@
+Validation report — 1P5O
+Generated: 2026-04-17T13:51:57.669169
+============================================================
+
+Chain selected : A
+Residues used  : 1–77  (77 total)
+
+Continuity     : OK (no gaps)
+
+C3' completeness: OK (all residues have C3' atoms)
+
+Overall status : PASS

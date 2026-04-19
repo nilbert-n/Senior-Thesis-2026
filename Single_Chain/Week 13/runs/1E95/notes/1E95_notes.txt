@@ -1,0 +1,49 @@
+Week 13 — 1E95 run notes
+============================================================
+
+Target        : 1E95
+Description   : SRV-1 RNA pseudoknot involved in -1 frameshifting
+Sequence      : GCGGCCAGCUCCAGGCCGCCAAACAAUAUGGAGCAC
+Length        : 36 nt  (residues 1–36, chain A)
+Caveats       : Solution NMR. Clean geometry, no caveats.
+
+Simulation seeds (NVT_<target>_target.in):
+  velocity seed  : 75865
+  langevin seed  : 77085
+  (set 2026-04-17; unique across all Week 13 targets)
+
+Prepared outputs (do not modify):
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95_rna_full.pdb
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95_c3only.pdb
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95.dat           <- copied to inputs/1E95.dat
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95_sequence.txt
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95_metadata.json
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/1E95/1E95_validation.txt
+
+Files in this run folder:
+  inputs/1E95.dat               — coarse-grained C3' LAMMPS data
+  inputs/NVT_1E95_target.in     — target-only NVT input (edit seeds/T)
+  inputs/NVT_1E95_aso_bind.in   — ASO-binding template (NOT ready)
+  slurm/run_1E95_target.sh      — SLURM submission for target-only run
+  slurm/run_1E95_aso_bind.sh    — SLURM template for ASO run (NOT ready)
+
+TODOs before launching target-only simulation:
+  [ ] Choose temperature (default 300 K; consider 250/275/325/350 K sweep)
+  [ ] Replace seed values in NVT_1E95_target.in
+  [ ] Confirm outputs/ disk quota is sufficient
+      (1 µs dump at 50000-step interval ≈ estimate based on 36 atoms)
+  [ ] Submit: sbatch slurm/run_1E95_target.sh
+
+TODOs before building ASO-binding simulation:
+  [ ] Complete target-only run and confirm stable folded structure
+  [ ] Design ASO sequence complementary to target
+  [ ] Build combined RNA+ASO coarse-grained data file:
+        inputs/1E95_aso_combined.dat
+      Required format: same as existing ASO .dat files in Week 9/10
+        - mol 1 = ASO  (N beads, same 4 atom types A=1 C=2 G=3 U=4)
+        - mol 2 = RNA target  (36 beads, atom types 1–4)
+        - mol 3..N = free ASOs if n_aso > 1
+        - bonds and angles for every molecule
+      Generate with: scripts/week13/build_target_aso_dat.py
+  [x] No new pair_coeff lines needed for unmodified ASO (same 4 types reused)
+  [ ] Submit: sbatch slurm/run_1E95_aso_bind.sh

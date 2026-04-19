@@ -1,0 +1,49 @@
+Week 13 — 7LYJ run notes
+============================================================
+
+Target        : 7LYJ
+Description   : SARS-CoV-2 frameshifting pseudoknot RNA
+Sequence      : CGGUGUAAGUGCAGCCCGUCUUACACCGUGCGGCACAGCGGAAACGCUGAUGUCGUAUACAGGGCU
+Length        : 66 nt  (residues 1–66, chain A)
+Caveats       : Primary thesis target for ASO binding. 66 nt. Verify folded structure matches literature pseudoknot topology before ASO placement.
+
+Simulation seeds (NVT_<target>_target.in):
+  velocity seed  : 65130
+  langevin seed  : 85047
+  (set 2026-04-17; unique across all Week 13 targets)
+
+Prepared outputs (do not modify):
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ_rna_full.pdb
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ_c3only.pdb
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ.dat           <- copied to inputs/7LYJ.dat
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ_sequence.txt
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ_metadata.json
+  /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/outputs/7LYJ/7LYJ_validation.txt
+
+Files in this run folder:
+  inputs/7LYJ.dat               — coarse-grained C3' LAMMPS data
+  inputs/NVT_7LYJ_target.in     — target-only NVT input (edit seeds/T)
+  inputs/NVT_7LYJ_aso_bind.in   — ASO-binding template (NOT ready)
+  slurm/run_7LYJ_target.sh      — SLURM submission for target-only run
+  slurm/run_7LYJ_aso_bind.sh    — SLURM template for ASO run (NOT ready)
+
+TODOs before launching target-only simulation:
+  [ ] Choose temperature (default 300 K; consider 250/275/325/350 K sweep)
+  [ ] Replace seed values in NVT_7LYJ_target.in
+  [ ] Confirm outputs/ disk quota is sufficient
+      (1 µs dump at 50000-step interval ≈ estimate based on 66 atoms)
+  [ ] Submit: sbatch slurm/run_7LYJ_target.sh
+
+TODOs before building ASO-binding simulation:
+  [ ] Complete target-only run and confirm stable folded structure
+  [ ] Design ASO sequence complementary to target
+  [ ] Build combined RNA+ASO coarse-grained data file:
+        inputs/7LYJ_aso_combined.dat
+      Required format: same as existing ASO .dat files in Week 9/10
+        - mol 1 = ASO  (N beads, same 4 atom types A=1 C=2 G=3 U=4)
+        - mol 2 = RNA target  (66 beads, atom types 1–4)
+        - mol 3..N = free ASOs if n_aso > 1
+        - bonds and angles for every molecule
+      Generate with: scripts/week13/build_target_aso_dat.py
+  [x] No new pair_coeff lines needed for unmodified ASO (same 4 types reused)
+  [ ] Submit: sbatch slurm/run_7LYJ_aso_bind.sh

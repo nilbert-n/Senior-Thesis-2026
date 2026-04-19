@@ -1,0 +1,18 @@
+{
+  "target": "1ANR",
+  "source_file": "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/inputs/1ANR.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    17,
+    45
+  ],
+  "n_residues": 29,
+  "n_usable": 29,
+  "sequence": "GGCAGAUCUGAGCCUGGGAGCUCUCUGCC",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T13:51:57.656394"
+}

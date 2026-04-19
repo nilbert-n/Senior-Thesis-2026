@@ -1,0 +1,18 @@
+{
+  "target": "1E95",
+  "source_file": "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/inputs/1E95.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    1,
+    36
+  ],
+  "n_residues": 36,
+  "n_usable": 36,
+  "sequence": "GCGGCCAGCUCCAGGCCGCCAAACAAUAUGGAGCAC",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T13:51:57.664127"
+}

@@ -1,0 +1,12 @@
+Validation report — 2MNC
+Generated: 2026-04-17T13:45:50.026455
+============================================================
+
+Chain selected : A
+Residues used  : 8–23  (16 total)
+
+Continuity     : OK (no gaps)
+
+C3' completeness: OK (all residues have C3' atoms)
+
+Overall status : PASS

@@ -1,0 +1,18 @@
+{
+  "target": "1RNK",
+  "source_file": "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/inputs/1RNK.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    1,
+    34
+  ],
+  "n_residues": 34,
+  "n_usable": 34,
+  "sequence": "GGCGCAGUGGGCUAGCGCCACUCAAAAGGCCCAU",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T13:51:57.681036"
+}

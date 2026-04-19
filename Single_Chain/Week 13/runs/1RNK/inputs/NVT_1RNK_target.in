@@ -1,0 +1,98 @@
+# =================================================================
+# Week 13  |  Target-only NVT equilibration + production
+# Target   : 1RNK  (RNA pseudoknot causing efficient -1 programmed frameshifting)
+# Sequence : GGCGCAGUGGGCUAGCGCCACUCAAAAGGCCCAU
+# Length   : 34 nt  (residues 1–34)
+# Ensemble : NVT — Langevin thermostat
+# Prepared : Week 13 prepare_target pipeline
+# -----------------------------------------------------------------
+# TODOs before launching:
+#   [ ] Confirm T_target is appropriate for this RNA
+#   [x] Seeds set: velocity=39266  langevin=88778
+#   [ ] Verify box size is adequate (current: ±500.6 Å default)
+#   [ ] Review dump frequency vs available disk quota
+# =================================================================
+
+units       real
+boundary    p p p
+atom_style  full
+
+timestep    10
+special_bonds lj 0.0 0.0 1.0
+neighbor    15.0 bin
+neigh_modify every 10 delay 0
+comm_style  tiled
+
+# --- Variables ---------------------------------------------------
+variable df       string inputs/1RNK.dat
+variable T_target equal  300.0          # TODO: adjust temperature (K)
+variable tag      string 1RNK_target
+
+shell mkdir -p outputs logs
+
+# --- Read structure ----------------------------------------------
+read_data   ${df}
+log         outputs/log.${tag}.lammps
+
+# --- Force field -------------------------------------------------
+bond_style  harmonic
+bond_coeff  1 7.5 5.9
+
+angle_style harmonic
+angle_coeff 1 5.0 150.0
+
+pair_style  hybrid/overlay lj/cut 10.0 base/rna 18.0
+pair_modify shift yes
+
+pair_coeff * * lj/cut 2.0 8.9089871814
+
+pair_coeff 1 1 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 1 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 2 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 3 base/rna 5.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 2 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 3 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 3 4 base/rna 3.33333 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+pair_coeff 4 4 base/rna 0.00000 3.0 13.8 1.5 0.5 1.8326 0.9425 1.8326 1.1345
+
+# --- Minimization ------------------------------------------------
+minimize 1.0e-4 1.0e-6 1000 10000
+reset_timestep 0
+
+# --- Output setup ------------------------------------------------
+dump d1 all custom 50000 outputs/${tag}.lammpstrj id mol type q xu yu zu
+dump_modify d1 sort id
+
+thermo_style custom step pe ke etotal temp press density
+thermo       10000
+thermo_modify flush yes
+
+variable vpe equal pe
+variable vke equal ke
+variable vT  equal temp
+variable vE  equal etotal
+variable vRg equal gyration(all)
+
+fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg &
+    file outputs/thermo_${tag}_averaged.dat
+
+# --- NVT equilibration (50 ns) -----------------------------------
+velocity all create ${T_target} 39266 rot yes dist gaussian
+
+fix fxlang all langevin ${T_target} ${T_target} 1000.0 88778
+fix fxnve  all nve
+fix recenter all momentum 1000 linear 1 1 1
+
+run 5000000
+
+# --- Production (1 µs) -------------------------------------------
+unfix favg
+fix favg all ave/time 10000 10 100000 v_vpe v_vke v_vT v_vE v_vRg &
+    file outputs/thermo_${tag}_production.dat
+
+restart 10000000 outputs/backup_${tag}.*.restart
+run 100000000
+
+write_data outputs/${tag}_final.data

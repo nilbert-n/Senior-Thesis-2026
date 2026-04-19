@@ -1,0 +1,61 @@
+# Week 13 target manifest
+#
+# Each entry specifies a PDB/mmCIF target to prepare for LAMMPS simulation.
+# The batch script will look for inputs in Single_Chain/Week 13/inputs/
+# unless an explicit 'file' path is given.
+#
+# Fields:
+#   name      : target identifier (used for output filenames)
+#   file      : (optional) explicit path or filename; defaults to <name>.pdb1
+#   chain     : (optional) chain ID to extract; auto-selected if omitted
+#   resrange  : (optional) "START:END" to trim to a sub-range of residues
+#   skip      : (optional) set to true to exclude from batch run
+#   notes     : (optional) free-text annotation
+#
+# Exit codes from batch_prepare_targets.py:
+#   0 = all targets PASS
+#   1 = one or more targets NEED_REVIEW (ambiguous chain, gaps, missing C3')
+#   2 = one or more targets ERROR (file not found, parse failure)
+
+targets:
+
+  - name: 1ANR
+    chain: A
+    notes: >
+      HIV-1 TAR RNA cis-acting regulatory element, 29 nt.
+      NMR ensemble (20 structures) — pipeline uses MODEL 1 only.
+
+  - name: 1E95
+    chain: A
+    notes: >
+      SRV-1 RNA pseudoknot involved in -1 frameshifting, 36 nt.
+      Solution NMR structure.
+
+  - name: 1P5O
+    chain: A
+    notes: >
+      HCV IRES domain II, 77 nt. Largest target in this set.
+      Verify residue continuity — IRES structures can have insertion codes.
+
+  - name: 1RNK
+    chain: A
+    notes: >
+      RNA pseudoknot that causes efficient -1 frameshifting, 34 nt.
+
+  - name: 1XJR
+    chain: A
+    notes: >
+      Rigorously conserved RNA element within SARS coronavirus, 47 nt.
+      Contains a GTP at position 1 (modified residue) — check C3' completeness.
+
+  - name: 2MNC
+    chain: A
+    skip: true
+    notes: >
+      Oligonucleotide model of miR-21 pre-element, 29 nt.
+
+  - name: 7LYJ
+    chain: A
+    notes: >
+      SARS-CoV-2 frameshifting pseudoknot RNA, 66 nt.
+      Directly relevant to thesis ASO-targeting work.

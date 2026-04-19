@@ -1,0 +1,18 @@
+{
+  "target": "2MNC",
+  "source_file": "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/inputs/2MNC.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    8,
+    23
+  ],
+  "n_residues": 16,
+  "n_usable": 16,
+  "sequence": "CCGUUGAAUCUCACGG",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T13:45:50.027611"
+}

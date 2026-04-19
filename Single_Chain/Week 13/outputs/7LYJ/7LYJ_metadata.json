@@ -1,0 +1,18 @@
+{
+  "target": "7LYJ",
+  "source_file": "/scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/inputs/7LYJ.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    1,
+    66
+  ],
+  "n_residues": 66,
+  "n_usable": 66,
+  "sequence": "CGGUGUAAGUGCAGCCCGUCUUACACCGUGCGGCACAGCGGAAACGCUGAUGUCGUAUACAGGGCU",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T13:51:57.696121"
+}

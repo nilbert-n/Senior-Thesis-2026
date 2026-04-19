@@ -1,0 +1,12 @@
+Validation report — 1E95
+Generated: 2026-04-17T13:51:57.659926
+============================================================
+
+Chain selected : A
+Residues used  : 1–36  (36 total)
+
+Continuity     : OK (no gaps)
+
+C3' completeness: OK (all residues have C3' atoms)
+
+Overall status : PASS

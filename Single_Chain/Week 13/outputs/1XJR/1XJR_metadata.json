@@ -1,0 +1,18 @@
+{
+  "target": "1XJR",
+  "source_file": "../../Single_Chain/Week 13/inputs/1XJR.pdb1",
+  "chain": "A",
+  "chain_ambiguous": false,
+  "residue_range": [
+    1,
+    47
+  ],
+  "n_residues": 47,
+  "n_usable": 47,
+  "sequence": "GGAGUUCACCGAGGCCACGCGGAGUACGAUCGAGGGUACAGUGAAUU",
+  "missing_c3": 0,
+  "gaps": [],
+  "flags": [],
+  "status": "PASS",
+  "generated": "2026-04-17T14:44:39.497584"
+}

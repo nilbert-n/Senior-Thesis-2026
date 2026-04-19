@@ -1,0 +1,18 @@
+build_target_aso_dat.py — output summary
+Generated : 2026-04-18T14:49:44.734942
+============================================================
+
+RNA target  : /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/runs/7LYJ/inputs/7LYJ.dat  (66 beads)
+ASO seq     : CGGUGUAAGA  (10 beads)
+n_aso total : 20  (1 docked + 19 free)
+Box         : ±220.0 Å
+Offset      : +20.0 Å along x from RNA centroid
+Seed        : 42
+
+Molecule layout:
+  mol 1   ASO (primary, atoms 1–10)
+  mol 2   RNA target (atoms 11–76)
+  mol 3–21  free ASOs (19 copies)
+
+Totals: 266 atoms, 245 bonds, 224 angles
+Output: /scratch/gpfs/JERELLE/nilbert/Single_Chain/Week 13/runs/7LYJ/inputs/7LYJ_aso_n20_combined.dat

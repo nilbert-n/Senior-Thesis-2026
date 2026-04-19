@@ -1,0 +1,12 @@
+Validation report — 7LYJ
+Generated: 2026-04-17T13:51:57.691725
+============================================================
+
+Chain selected : A
+Residues used  : 1–66  (66 total)
+
+Continuity     : OK (no gaps)
+
+C3' completeness: OK (all residues have C3' atoms)
+
+Overall status : PASS
